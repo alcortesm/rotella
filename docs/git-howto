@@ -1,0 +1,28 @@
+To clone the repo:
+
+ ; cd ~/tmp
+ ; mount-git-repos
+ ; git clone file:///home/alcortes/mnt/git-repos/netqos
+ ; unmount-git-repos
+ ; cd netqos
+
+
+To submit changes to the main repo:
+
+ ; cd
+ ; mount-git-repos
+ ; cd ~/mnt/git-repos/netqos
+
+ # add a new remote:
+ # git remote add local file:///home/alcortes/local/git-cache/netqos
+ ; git fetch local
+
+ # check out the changes
+ ; git log local/master ^master
+
+ # If we are happy, merge:
+ # git checkout master
+ ; git merge local/master
+
+ ; cd
+ ; unmount-git-repos
