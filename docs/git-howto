@@ -1,10 +1,8 @@
-To clone the repo:
+To clone the repo into ~/tmp/:
 
  ; cd ~/tmp
- ; mount-git-repos
- ; git clone file:///home/alcortes/mnt/git-repos/netqos
- ; unmount-git-repos
- ; cd netqos
+ ; git clone ssh://alcortes@violin.it.uc3m.es/users/prof/alcortes/git-repos/rotella
+ ; cd rotella
 
 
 To submit changes to the main repo:
