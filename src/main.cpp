@@ -1,7 +1,7 @@
-#include <stdlib.h>
-#include <stdio.h>
+#include<cstdlib>
+#include<cstdio>
 
-#include "utils.h"
+#include"utils.h"
 
 void
 usage(void)
@@ -23,5 +23,5 @@ int
 main(int argc, char ** argv)
 {
     check_args(argc, argv);
-    exit(EXIT_FAILURE);
+    exit(EXIT_SUCCESS);
 }
