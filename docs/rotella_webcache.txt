@@ -1,0 +1,174 @@
+Rotella Web Caching System
+
+Copyright Notice
+
+  ROtella Web Caching System is a simplification of the Gnutella Web
+  Caching System, version 1.3.1/6.7.2002. It is used as the
+  specification for the practical assigment in the Redes de
+  Ordenadores II (Computer Netwoks II) course in the Carlos III
+  University of Madrid. For more details see
+  http://www.it.uc3m.es/celeste/docencia/inf/rroo/
+
+  This simplification has been made by Celeste Campo, with the help of
+  Iciar Martínez, Carlos García Rubio, Andrés Marín y Rafael Sánchez.
+
+  For the original Gnutella Web Caching System, Copyright (c) 2003 Hauke
+  Dämpfling, version 1.3.1 / 6.7.2002,
+  http://www.gnucleus.com/gwebcache/
+
+Table of Contents
+
+  1 Introduction 
+  2 Client-Script Interface 
+     2.1 "Hostfile" Request 
+     2.2 Update Request  
+  3 Client-Side Behavior 
+     3.1 Requests 
+  4 Server-Side Behavior 
+
+
+1 Introduction
+
+The goal of the "Rotella Web Caching System" (the "cache") is to
+eliminate the "Initial Connection Point Problem" of a fully
+decentralized network: Where do I find a first host to connect to? The
+cache is a program (script) placed on any web server that stores IP
+addresses of hosts in the Rotella network and URLs of other
+caches. Rotella clients connect to a cache in their list
+randomly. They send and receive IP addresses and URLs from the
+cache. With the randomized connection it is to be assured that all
+caches eventually learn about each other, and that all caches have
+relatively fresh hosts and URLs. The concept is independent from
+Rotella clients.
+
+Caches should only return a few (around 10-20) and only the newest
+Hosts. Therefore they only need to keep that many entries in their
+lists and can flush older entries as newer ones arrive. Keeping such a
+relatively small number of entries is essential to keeping all the
+information in all caches fresh.
+
+2 Client-Script Interface
+
+2.1 "Hostfile" Request
+
+The client wishes to receive a list of Rotella nodes.
+
+Request:   URL?hostfile=1
+
+Response:  A HTTP response code 2xx with a plain text, return-separated 
+           list of Rotella nodes in the format "ip:port" (numerical IPs only)
+           in the data section of the HTTP response. The list should not be very
+	   long (around 20 nodes) and should contain only the newest
+	   entries. (Returning an empty list is also possible in case
+	   the cache does not have any hosts stored yet).
+
+	   OR
+
+	   A redirect (HTTP code 3xx) response, indicating that the
+	   client needs to send another HTTP GET request for the
+	   file. Clients must support this method. Luckily, many
+	   standard HTTP libraries automatically follow
+	   redirects. When a client follows the redirect, it should
+	   receive a list as described above.
+
+	   OR
+
+	   The string "ERROR", possibly followed by more specific
+	   error information.
+
+2.2 Update Request
+
+The client wishes to update IP addresses and/or alternate web cache
+URLs to a cache.
+
+Request:  URL?ip=XXX.XXX.XXX.XXX:PORT 
+	  Reminder: Requests need to be URL-Encoded - see "Requests" in 
+	  "Client-Side Behavior"
+
+Response: A HTTP response code 2xx with a plain text, which first line must 
+          be: either "OK" or "ERROR: Message". The following lines can be 
+          used by the script for further messages, such as information or 
+          warnings (can be ignored by the client).
+
+3 Client-Side Behavior
+
+Clients generally keep an internal cache of the IP addresses of known
+Rotella nodes.
+
+In addition to this list, they should also keep an internal list of
+web caches. 
+
+When making requests, a client should pick a cache from its internal
+list - a different one every time.
+
+A client should send a Hostfile request whenever it needs hosts to
+connect to.
+
+After a client has been up for an hour, it should begin sending an
+Update request periodically - every 60 minutes. It sends its own IP
+address and port in the "ip" parameter and a the URL of a random cache
+in the "url" parameter. 
+
+3.1 Requests
+
+Interaction with the web server and cache is a series of HTTP GET
+requests and responses. In these specifications, notation URL?query
+indicates the URLs of a script with the attached query string, where
+"query" is a series of name=value pairs joined by "&"s. These
+name/value pairs must be "URL-Encoded".
+
+Due to the differences between operating systems, responses can be LF,
+CRLF, or CR-terminated, but should be of Content-Type
+"text/*". Responses are interpreted line-by-line.
+
+Tip: GET requests: the query (the information/request you are sending
+the script) is simply part of the URL. For example, let's say the
+request is: URL?ip=192.168.0.1:123, you will simply have to open the
+following URL using whatever web functions your programming language
+provides:
+
+http://www.somehost.com/path/to/script.php?ip=192.168.0.1:123
+
+4 Server-Side Behavior
+
+Scripts accept requests by clients through the standard HTTP GET
+mechanism and should respond according to these specifications;
+otherwise they risk being marked as invalid by a client. Responses
+should be of Content-Type "text/*" (i.e. any content-type that is text
+- such as text/plain or text/html).
+
+An OK message usually means that everything went well and the script
+executed normally.
+
+An ERROR message usually indicates some form of fatal error because of
+which the script could not do what is supposed to. Since clients will
+(should) remove scripts that return error messages often, it is
+advised to return ERRORs only when the script is expected to be down
+for a while (such as, the script will be or has been removed from
+server, server overload, file errors, etc.).
+
+In other words, things such as the submission of an invalid IP and/or
+URL, should more likely be answered by an Error followed by a warning
+message on the next line(s).
+
+Scripts should only return a few (around 10-20) and only the newest
+Hosts. Therefore they only need to keep that many entries in their
+lists and can flush older entries as newer ones arrive. Keeping such a
+relatively small number of entries is essential to keeping all the
+information in all caches fresh.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

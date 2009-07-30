@@ -1,0 +1,184 @@
+ROTELLA(1)                      Commands Manual                     ROTELLA(1)
+
+NAME
+     rotella - A command line ROtella servent
+
+SYNOPSIS
+     rotella
+
+DESCRIPTION
+     rotella is a high-performance ROtella servent supporting v0.1 of the
+     ROtella protocol.
+
+     rotella is referred to as a servent - it is both client and server to the
+     network, allowing the user to both serve files to other ROtella network
+     members and to receive files from those members.
+
+     The terminal interface provided on the command line allows the user to
+     operate on information displayed.  Many commands will provide a numbered
+     list in its output; the command line interface remembers which numbers
+     were assigned during the last listing of the output type in question,
+     whether that be the list of connections, the list of searches, or the
+     last displayed list of results.  Rerunning the command that generated the
+     list will change the numbers which the user must use in following com-
+     mands to the newly generated numbers.
+     
+     When rotella starts, it obtains from the configuration file the URL for
+     a ROWebCache server. Then, using the ROWebCache protocol, rotella
+     obtains from the ROWebCache server a list of ROtella nodes. Finally,
+     a prompt is presented to the user. The user can invoke commands for
+     searching files in the ROtella network (find), for downloading a file
+     from any host in the network (get), for listing the files currently
+     being downloaded (info), for interrupting the download of any file
+     (stop), or for exiting rotella (exit).
+
+COMMANDS
+     find keyword
+       Searches for files in the network containing "keyword" in their names.
+       Once a search has located results, those results are listed, numbered 
+       with a result ID, with this format:
+         result ID) file name
+                    size
+                    IP:port
+       Example:
+         > find World
+         1) Eric Clapton-If I could Change The World.mp3
+	    3.6M
+            69.244.21.191:6351
+         2) Gary Jules- Mad World.mp3
+	    7.23M
+            70.178.17.75:6346
+         >
+
+       Once the user has viewed the results, she may use the result ID
+       provided in that list to perform a get, and attempt to download that
+       file.
+
+     get ID
+       Initiates download of the file defined by specific result IDs taken
+       from the last find command.
+
+       Example:
+         > get 2
+
+       Once download is started, rotella will try to get the requested file
+       from any hosts providing that file. The download will complete only
+       when the transfer is successful or stopped with the stop transfer
+       command.
+
+       The progress of downloads can be examined with the info command.
+
+     info [options ...]  
+       Displays information regarding current status of the client and 
+       its activities.  If executed without arguments, it will list 
+       information from all sections, as if the user had supplied all 
+       options to the command.  Using options will display only the 
+       requested information.  Multiple options may be provided.  These
+       options are
+
+       uploads
+         Displays each upload, or file sent to another ROtella user.
+         Each upload lists the host and port which the file is being
+         sent to, and various transfer statistics about the file
+         transfer in progress.  Each transfer is numbered, and can be
+         stopped using the stop command.
+
+       downloads
+         Displays all currently active downloads.  For each download,
+         information concerning the remote host selected for download-
+         ing and transfer statistics are provided. Each transfer is
+         numbered, and can be stopped using the stop command.
+
+       hosts
+         Displays the current content of the hosts cache, the top of the
+         iceberg of our 'known universe'.  Hosts in this list may be used to
+         create additional/future ROtella-net connections.  When the client
+         is in operational state, the host cache contains at least a few
+         dozen entries; normally not more than 100.
+
+       Example:
+         > info uploads downloads
+	 Uploads:
+	   1) Eric Clapton-If I could Change The World.mp3
+	      62.195.18.49:6346
+	      4.5M/5.16M 
+	 Downloads:
+	   2) Gary Jules - Mad World.mp3
+	      86.10.142.237
+	      3.25K/2.86M 
+	   3) Graham Colton Band - All the World Tonight.mp3
+	      24.195.172.141
+	      0/5.45M  
+         > info hosts
+	   68.52.28.249:36661
+	   24.195.172.141:6348
+	   86.10.142.237:6346
+	   62.195.18.49:6348
+	 >
+
+     stop ID
+       Stops the file transfers corresponding to one transfer (upload or
+       download) ID.  Note that this command does not remove partial
+       files from the download directory.
+
+     exit
+       Exits the servent.
+
+     set [variable] [value]
+       This command is used to access the application's many options and pref-
+       erences. Using the command without any parameters provides an organised
+       list of all options available and their current values.  When the com-
+       mand is called with a single variable name, but without a value, it
+       will display the current settings of that variable.  To set a vari-
+       able's contents, supply the value as the second parameter to the com-
+       mand.
+
+       The variables supported are:
+
+       rowebcache
+         URL where ROtella Web Caching System starts the initial connection.
+
+       localport
+         Port used by the application (default 6346).
+
+       sharepath
+	  Path where shared files are located.
+
+       incomingpath
+          Path where files being downloaded are stored. When the download is 
+          completed the file is moved to the download path directory.
+
+       downloadpath
+          Path where downloaded files will be stored.
+
+FILES
+     When rotella starts, if a file named rotella.cfg exists in the current
+     directory, it executes the set commands in it as if they were typed in
+     the command prompt.
+
+     Example rotella.cfg file:
+       set rowebcache http://www.somehost.com/path/to/script
+       set localport 6346
+       set sharepath /home/user/rotella/share/
+       set incomingpath /home/user/rotella/incoming/
+       set downloadpath /home/user/rotella/download/
+
+VERSION
+     This manual documents rotella 0.1
+
+AUTHORS
+     Celeste Campo, based on mutella, from:
+
+       Max Zaitsev   Original author and maintainer.
+       Gregory R. Block
+                     Co-maintainer and co-developer, build system, and
+		     portability changes
+       Other Contributors
+         Marco Herrn Original author of this manual page.
+         Greg Parker Contribution of a one-shot replacment for poll() for
+	             systems only supporting select()
+
+SEE ALSO
+      The specifications of the ROtella and the ROWebCache protocols.
+
+                                    Oct, 2005

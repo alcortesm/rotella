@@ -1,0 +1,704 @@
+Request for Comments: NNNN                                 Celeste Campo
+Category: Informational                                     October 2005
+
+
+
+                        ROtella 0.1
+
+
+Status of this Memo
+
+   This is a draft.
+
+
+Copyright Notice
+
+   This document describes a simplification of the Gnutella protocol
+   to be used as the specification for the practical assigment in the
+   Redes de Ordenadores II (Computer Netwoks II) course in the
+   Carlos III University of Madrid. For more details see 
+   http://www.it.uc3m.es/celeste/docencia/inf/rroo/
+   
+   For the original Gnutella protocol, copyright (C) 2002, Tor
+   Klingberg & Raphael Manfredi. All Rights Reserved.
+   Permission is granted to make verbatim copies of this document, 
+   provided the Copyright Notice is preserved.
+
+
+Table of Contents
+
+   1   Introduction
+   1.1   Purpose
+   1.2   Requirements
+   1.3   Terminology
+   2   Protocol Definition
+   2.1   Initiating a Connection
+   2.2   ROtella Messages
+   2.2.1   Message Header
+   2.2.2   Query (0x80)
+   2.2.3   Query Hit (0x81)
+   2.2.4   Use of Query and Query Hit
+   2.2.4.1   Forwarding and routing of Query and Query Hit messages
+   2.2.4.2   When and how to send new Query messages.
+   2.2.4.3   When and how to respond with Query Hit messages.
+   2.2.5   Bye (0x02)
+   3   Protocol Usage
+   3.1   Flow Control
+   4   File Transfer
+   4.1   Normal File Transfer
+   4.2   Sharing
+   5   Credits
+
+
+1 Introduction
+
+1.1 Purpose     
+
+ROtella is a decentralized peer-to-peer system. It allows the
+participants to share resources from their system for others to
+see and get, and locate resources shared by others on the network.
+
+Each participant launches a ROtella program, which will seek out 
+other ROtella nodes to connect to.  This set of connected nodes 
+carries the ROtella traffic, which is essentially made of queries, 
+replies to those queries, and also other control messages to 
+facilitate the discovery of other nodes.
+
+Resource data exchanges between nodes are negotiated using the 
+standard HTTP protocol.  The ROtella network is only used to locate 
+the nodes sharing those resources.
+
+1.2 Requirements
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+document are to be interpreted as described in RFC 2119 [34].
+
+
+1.3 Terminology
+
+Servent         A program participating in the ROtella network is 
+                called a servent. The words "peer", "node" and "host"
+                have similar meanings, but refers to a network 
+                participant rather than a program. When a servent 
+                have a clear client or server role the words "client"
+                or "server" may be used. The word "client" is 
+                sometimes used as a synonym for servent. This is a 
+                contraction of "SERVer" and "cliENT", Some other 
+                documents use the word "servant" instead of servent.
+
+Message         Messages are the entity in which information is
+                transmitted over the network. Sometimes the word 
+                "packet" is used with the same meaning. Some other 
+                documents use the word "descriptor"
+
+GUID            Globally Unique IDentifier.  This is a 16-byte long
+                value made of random bytes, whose purpose it is to
+                identify servents and messages.  This identification
+                is not a signature, just a way to identify network
+                entities in a unique manner.
+
+
+2 Protocol Definition
+
+The ROtella protocol defines the way in which servents communicate 
+over the network. It consists of a set of messages used for 
+communicating data between servents and a set of rules governing 
+the inter-servent exchange of messages. Currently, the following 
+messages are defined:
+
+Query           The primary mechanism for searching the distributed 
+                network. A servent receiving a Query message will
+                respond with a Query Hit if a match is found against 
+                its local data set.
+
+QueryHit        The response to a Query. This message provides the
+                recipient with enough information to acquire the data
+                matching the corresponding Query.
+
+Bye             An optional message used to inform the remote host 
+                that you are closing the connection, and your reason 
+                for doing so.
+
+
+2.1 Initiating a Connection
+
+A ROtella servent connects itself to the network by establishing a 
+connection with another servent currently on the network. 
+
+Techniques for finding the first host are described in ROtella web
+caching specification. 
+
+Once the first connection is established, the addresses of more hosts
+will be supplied over the network. The default ROtella port is 6346,
+but servents MAY use any unused port.
+
+Once the address of another servent on the network is obtained, a 
+TCP/IP connection to the servent is created, and a handshaking 
+sequence is initiated. The client is the host initiating the 
+connection and the server is the host receiving it. "<cr>" refers 
+to ASCII character 13 (carriage return), and "<lf>" to 10 (new line).
+
+   1. The client establishes a TCP connection with the server.
+   2. The client sends "ROTELLA CONNECT/0.1<cr><lf>".
+   3. The client sends headers each terminated by "<cr><lf>", with
+      an extra "<cr><lf>" at the end.
+   4. The server responds with "ROTELLA/0.1 200 <string><cr><lf>".
+      <string> SHOULD be "OK", but servents SHOULD just look for the
+      "200" code.
+   5. The server sends all its headers, in the same format as in (3).
+   6. The client sends "ROTELLA/0.1 200 OK<cr><lf>, as in (4) if
+      after parsing the server's headers, it still wishes to connect.
+      Otherwise, it needs to reply with an error code and close the
+      connection.
+   7. Both client and server send binary messages at will.  
+
+Headers follow the standards described in RFC822 and RFC2616.  Each
+header is made of a field name, followed by a colon, and then the 
+value.  Each line ends with the <cr><lf> sequence, and the end of the
+headers is marked by a single <cr><lf> line.  Each line normally 
+starts a new header, unless it begins with a space or an horizontal 
+tab (ASCII codes 32 and 9 in decimal, respectively), in which case it
+continues the preceding header line.  The extra spaces and tabs may 
+be collapsed into a single space as far as the header value goes.  
+For instance:
+
+    First-Field: this is the value of the first field<cr><lf>
+    Second-Field: this is the value<cr><lf>
+        of the<cr><lf>
+        second field<cr><lf>
+    <cr><lf>
+
+The header above is made of two fields, "First-Field" and "Second-
+Field" whose values are respectively "this is the value of the first 
+field" and "this is the value of the second field" (leading spaces of
+the continuation were collapsed).  Note that the leading space 
+between the ":" ending the field name and the start of the value 
+string does not count.
+
+Multiple header lines with the same field name are identical to one
+header line where all the values of the fields would be separated by 
+",". This means:
+
+    Field: first<cr><lf>
+    Field: second<cr><lf>
+
+is strictly equivalent to saying:
+
+    Field: first,second<cr><lf>
+
+In other words, order matters in that case.
+
+Here is a sample interaction between a client and a server.  Data 
+sent from client to server is shown on the left; data sent from 
+server to client is shown on the right.
+
+     Client                           Server
+     -----------------------------------------------------------
+     ROTELLA CONNECT/0.1<cr><lf>
+     User-Agent: BearShare/1.0<cr><lf>
+     <cr><lf>
+                                      ROTELLA/0.1 200 OK<cr><lf>
+                                      User-Agent: BearShare/1.0<cr><lf>
+                                      <cr><lf>
+     ROTELLA/0.1 200 OK<cr><lf>
+     <cr><lf>
+
+     [binary messages]                [binary messages]
+
+A few notes about the responses: first, the client (server) SHOULD
+disconnect if receiving any response other than "200" at step 4
+(6).  There is no need to define these error codes now.  Second,
+servents SHOULD ignore higher version numbers in steps (2), (4), and
+(6).  For example, it is perfectly legal for a future client to
+connect to a server and send "ROTELLA CONNECT/0.2".  The server
+SHOULD respond with "ROTELLA/0.2 200 OK" if it supports the 0.2
+protocol, or "ROTELLA/0.1 200 OK" otherwise.
+
+A few notes about the headers: servents SHOULD use standard HTTP
+headers whenever appropriate. For example, servents MUST use the
+standard "User-Agent" header. Headers unknown to the servent MUST be
+ignored.
+
+A connection MUST be rejected when there are currently three servents
+already connected.
+
+When rejecting a connection, a servent MUST, if possible, provide 
+the remote host with a list of other ROtella hosts, so it can try 
+connecting to them. This MUST be done using the X-Try header.
+
+An X-Try header can look like:
+
+        X-Try:1.2.3.4:1234,3.4.5.6:3456
+
+There MAY be a space after the colon and after each comma. There MAY 
+be multiple X-Try headers in one header set. The header MAY end with
+an extra comma.  The header MAY be formatted on several lines using
+continuations.
+
+Each item in the X-Try header gives the IP address of a servent
+and its listening port number.
+
+The normal status code for rejecting a connection because the servent
+is busy is "503 " followed by "Busy" or another description string.
+
+
+2.2 ROtella Messages
+
+Once a servent has connected successfully to the network, it 
+communicates with other servents by sending and receiving ROtella 
+protocol messages. Each message is preceded by a Message Header with 
+the byte structure given below.
+
+Note 1: One ROtella message may be split up on multiple IP-packets. 
+This means one can never assume a ROtella message ends when the chunk of 
+data read from the socket ends.
+
+Note 2: All fields in the following structures are in little-endian 
+byte order unless otherwise specified.
+
+Note 3: All IP addresses in the following structures are in IPv4 
+format. For example, the IPv4 byte array
+
+    0xD0     0x11     0x32     0x04
+    byte 0   byte 1   byte 2   byte 3
+
+represents the dotted address 208.17.50.4.
+
+
+2.2.1 Message Header
+
+The message header is 23 bytes divided into the following fields.
+
+    Bytes:  Description:
+    0-15    Message ID/GUID (Globally Unique ID)
+    16      Payload Type
+    17      TTL (Time To Live)
+    18      Hops
+    19-22   Payload Length
+
+Message ID      A 16-byte string (GUID) uniquely identifying the
+                message on the network. 
+                        
+                Servents SHOULD store all 1's (0xff) in byte 8 of the
+                GUID.  (Bytes are numbered 0-15, inclusive.) This 
+                serves to tag the GUID as being from a modern 
+                servent.
+        
+                Servents SHOULD initially store all 0's in byte 15 of
+                the GUID. This is reserved for future use.
+
+                The other bytes SHOULD have random values.
+
+Payload         Indicates the type of message
+Type            0x80 = Query
+                0x81 = Query Hit
+                0x02 = Bye		
+
+TTL             Time To Live. The number of times the message 
+                will be forwarded by ROtella servents before it is 
+                removed from the network. Each servent will decrement
+                the TTL before passing it on to another servent. When
+                the TTL reaches 0, the message will no longer be 
+                forwarded (and MUST not).
+
+Hops            The number of times the message has been forwarded.
+                As a message is passed from servent to servent, the
+                TTL and Hops fields of the header must satisfy the 
+                following condition:
+                TTL(0) = TTL(i) + Hops(i)
+                Where TTL(i) and Hops(i) are the value of the TTL and
+                Hops fields of the message, and TTL(0) is maximum 
+                number of hops a message will travel (usually 7).
+
+Payload         The length of the message immediately following 
+Length          this header. The next message header is located 
+                exactly this number of bytes from the end of this 
+                header i.e. there are no gaps or pad bytes in the 
+                ROtella data stream. Messages SHOULD NOT be larger
+                than 4 kB.
+
+The Payload Length field is the only reliable way for a servent to 
+find the beginning of the next message in the input stream. 
+Therefore, servents SHOULD rigorously validate the Payload Length 
+field for each message received.  If a servent becomes out of synch 
+with its input stream, it SHOULD close the connection associated with
+the stream since the upstream servent is either generating, or 
+forwarding, invalid messages.
+
+Abuse of the TTL field in broadcasted messages (Query) will lead to 
+an unnecessary amount of network traffic and poor network 
+performance.  Therefore, servents SHOULD carefully check the TTL 
+fields of received query messages and lower them as necessary.  
+Assuming the servent's maximum admissible Query message life is 7 
+hops, then if TTL + Hops > 7, TTL SHOULD be decreased so that TTL + 
+Hops = 7.  Broadcasted messages with very high TTL values (>15) 
+SHOULD be dropped.
+
+Immediately following the message header, is a payload consisting 
+of one of the following messages.
+
+2.2.2 Query (0x80)
+
+Since Query messages are broadcasted to many nodes, the total size 
+of the message SHOULD not be larger than 256 bytes. Servents MAY drop
+Query messages larger that 256 bytes, and SHOULD drop Query messages 
+larger than 4 kB.
+
+A Query message has the following fields:
+
+Bytes:  Description:
+0-1     Minimum Speed. The minimum speed (in kb/second) of servents
+        that should respond to this message. A servent receiving a 
+        Query message with a Minimum Speed field of n kb/s SHOULD 
+        only respond with a Query Hit if it is able to communicate at
+        a speed >= n kb/s.
+        
+2-      Search Criteria. This field is terminated by a NUL (0x00).
+
+        See section 2.2.4.3 for rules and information on how to 
+        interpret the Search Criteria
+        
+2.2.3 Query Hit (0x81)
+
+Query Hit messages has the following fields:
+
+Bytes:  Description:
+0       Number of Hits. The number of query hits in the result set 
+        (see below).
+        
+1-2     Port. The port number on which the responding host can accept
+        incoming HTTP file requests. This is usually the same port as
+        is used for ROtella network traffic, but any port MAY be 
+        used.
+        
+3-6     IP Address. The IP address of the responding host. 
+        Note: This field is in big-endian format.
+
+7-10    Speed The speed (in kb/second) of the responding host.
+        
+11-     Result Set. A set of responses to the corresponding Query. 
+        This set contains Number_of_Hits elements, each with the 
+        following structure:
+        
+        Bytes:  Description:
+        0-3     File Size. The size (in bytes) of the file whose 
+                index is File_Index.
+
+        4-      File Index. A string, assigned by the responding 
+                host, which is used to uniquely identify the file 
+                matching the corresponding query. Terminated by a
+                null (i.e. 0x00).
+     
+        x-      File Name. The name of the file whose index is 
+                File_Index. Terminated by a null (i.e. 0x00) 
+
+Last 16 Servent Identifier. A 16-byte string uniquely identifying the
+        responding servent on the network. This SHOULD be constant 
+        for all Query Hit messages emitted by a servent and is 
+        typically some function of the servent's network address.
+
+2.2.4 Use of Query and Query Hit
+
+2.2.4.1 Forwarding and routing of Query and Query Hit messages 
+
+A servent SHOULD forward incoming Query messages to all of its 
+directly connected servents, except the one that delivered the 
+incoming Query.
+
+A servent MUST decrement a message header's TTL field, and 
+increment its Hops field, before it forwards the message to any 
+directly connected servent. If, after decrementing the header's TTL 
+field, the TTL field is found to be zero, the message MUST NOT 
+be forwarded along any connection.
+
+A servent receiving a message with the same Payload Message and 
+Message ID as one it has received before, MUST discard the 
+message. It means the message has already been seen.
+
+QueryHit messages MUST only be sent along the same path that 
+carried the incoming Query message. This ensures that only those 
+servents that routed the Query message will see the QueryHit 
+message in response. A servent that receives a QueryHit message
+with  Message ID = n, but has not seen a Query message with 
+Message ID = n SHOULD remove the QueryHit message from the 
+network.
+
+
+2.2.4.2 When and how to send new Query messages.
+
+Query messages are usually sent when the user initiates a search. 
+
+The TTL value of a new query created by a servent SHOULD NOT be 
+higher than 7, and MUST NOT be higher than 10. The hops value MUST be
+set to 0.
+
+
+2.2.4.3 When and how to respond with Query Hit messages.
+
+When a servent receives an incoming Query message it SHOULD match 
+the Search Criteria of the query against its local shared files. 
+
+The Search Criteria is text, and it has never been specified which 
+charset that text was encoded with. Therefore, servents MUST assume 
+it is pure ASCII only.
+
+The Search Criteria is a keyword. A servent SHOULD only respond with 
+files that has the keyword.
+
+Regular expressions are not supported and common regexp "meta-
+characters" such as "*" or "." will either stand for themselves or be
+ignored. The matching SHOULD be case sensitive.  Empty queries or 
+queries containing only 1-letter words SHOULD be ignored.
+
+Query messages with TTL=1, hops=0 and Search Criteria="    " (four
+spaces) are used to index all files a host is sharing. Servents 
+SHOULD reply to such queries with all its shared files. Multiple 
+Query Hit messages SHOULD be used if sharing many files. Allowed 
+reasons not to respond to index queries include privacy and 
+bandwidth. 
+
+Query Hit messages MUST have the same Message ID as the Query message
+it is sent in reply to. The TTL SHOULD be set to at least the hops
+value of the corresponding query plus 2, to allow the Query Hit to
+take a longer route back, if necessary. The TTL value MUST be at
+least the hops value of the corresponding query, and the initial
+hops value of the Query Hit message MUST (as usual) be set to 0.
+Some servents use a TTL of (2 * Query_TTL + 2) in their replies to
+be sure that the reply will reach its destination.  Replies with
+high TTL level SHOULD be allowed to pass through.
+
+2.2.9 Bye (0x02)
+
+The Bye message is an OPTIONAL message used to inform the 
+servent you are connected to that you are closing the connection. 
+
+Servents supporting the Bye message MUST indicate that by sending 
+the following header in the handshaking sequence:
+
+        Bye-Packet: 0.1
+
+Servents MUST NOT send Bye messages to hosts that has not indicated 
+support using the above header.  
+
+A Bye packet MUST be sent with TTL=1 (to avoid accidental propagation
+by an unaware servent), and hops=0 (of course).
+
+A servent receiving a Bye message MUST close its connection 
+immediately. The servent that sent the packet MUST wait a few 
+seconds for the remote host to close the connection before closing 
+it.  Other data MUST NOT be sent after the Bye message.  Make sure 
+any send queues are cleared. 
+
+The servent that sent by Bye message MAY also call shutdown() with 
+'how' set to 1 after sending the Bye message, partially closing the 
+connection.  Doing a full close() immediately after sending the Bye 
+messages would prevent the remote host from possibly seeing the Bye 
+message.
+
+After sending the Bye message, and during the "grace period" when
+we don't immediately close the connection, the servent MUST read
+all incoming messages, and drop them unless they are Query Hits, 
+which MAY still be forwarded (it would be nice to the
+network).  The connection will be closed as soon as the servent
+gets an EOF condition when reading, or when the "grace period"
+expires.
+
+A Bye message has the following fields:
+Bytes:  Description:
+
+0-2     Code. The presence of the Code allows for automated processing
+        of the message, and the regular SMTP classification of error 
+        code ranges should apply. Of particular interests are the 
+        200..299, 400..499 and 500..599 ranges.
+
+        The code is codified as a three ASCII character string.
+
+        Here is the general classification ("User" here refers to the 
+        remote node that we are disconnecting from):
+
+        2xx     The User did nothing wrong, but the servent chose to 
+                close the connection: it is either exiting normally 
+                (200), or the local manager of the servent requested 
+                an explicit close of the connection (201).
+
+        4xx     The User did something wrong, as far as the servent is
+                concerned. It can send packets deemed too big (400), 
+                too many duplicate messages (401), relay improper 
+                queries (402), relay messages deemed excessively long-
+                lived [hop+TTL > max] (403), send too many unknown 
+                messages (404), the node reached its inactivity 
+                timeout (405), it failed to reply to a ping with TTL=1
+                (406), or it is not sharing enough (407).
+
+        5xx     The servent noticed an error, but it is an "internal" 
+                one. It can be an I/O error or other bad error (500), 
+                a protocol desynchronization (501), the send queue 
+                became full (502).
+
+3       ASCII character blank (0x20).
+
+2-      NULL-terminated Description String. The format of the String 
+        is the following ( refers to "\r" and  to "\n"):
+
+                Error message, as descriptive as possible
+
+
+3 Protocol Usage
+
+Apart from the protocol definition in section 2, there are also 
+some guidelines on how to use the protocol. These are not absolutely
+necessary to participate in the network, but very important for an
+effective network.
+
+
+3.1 Flow Control
+
+It is very important that all servents have a system for regulating 
+the data that passes through a connection.
+
+The most simple way is to close a connection if it gets overloaded.
+A better way is to drop broadcasted packets to reduce the amount of
+bandwidth used.  A much better way is to do the following:
+
+Implement an output queue, listing pending outgoing messages in
+FIFO order.  As long as the queue is less than, say, 25% of its
+max size (in bytes queued, not in amount of messages), do nothing.
+If the queue gets filled above 50%, enter flow-control mode.  You
+stay in flow-control mode (FC mode for short) as long as the queue
+does not drop below 25%.  This is called "hysteresis".
+
+The queue size SHOULD be at least 150% of the maximum admissible
+message size.
+
+In FC mode, all incoming queries on the connection are dropped.
+The rationale is that we would not want to queue back potentially
+large results for this connection since it has a throughput problem.
+
+Messages to be sent to the node (i.e. queued on the output queue)
+are prioritized:
+
+* For broadcasted messages, the more hops the packet has traveled,
+  the less prioritary it is.  Or the less hops, the more prioritary.
+  This means your own queries are the most prioritary (hops = 0).
+
+* For replies (query hits), the more hops the packet has traveled,
+  the more prioritary it is.  This is to maximize network usefulness.
+  The packet was relayed by many hosts, so it should not be dropped
+  or the bandwidth it used would become truly wasted.
+
+* Individual messages are prioritized thusly, from the most
+  prioritary to the least: Query Hit, Query.
+
+Normally, all messages are accepted.  However, when the message to
+enqueue would make the queue fill to more than 100% of its maximum
+size, any queued message less prioritary in the queue is dropped.
+If enough room could be made, enqueue the packet.  Otherwise, if the
+message is a Query, drop it.  If not, send a Bye 502 (Send Queue
+Overflow) message.
+
+4 File Transfer
+
+4.1 Normal File Transfer
+
+Once a servent receives a QueryHit message, it may initiate the 
+direct download of one of the files described by the message's Result
+Set. Files are downloaded out-of-network i.e. a direct connection 
+between the source and target servent is established in order to 
+perform the data transfer. File data is never transferred over the 
+ROtella network.
+
+The file download protocol is HTTP 1.1.
+
+The servent initiating the download sends a request string on the 
+following form to the target server:
+
+    GET /<File Index>/<File Name> HTTP/1.1<cr><lf>
+    User-Agent: ROtella<cr><lf>
+    Host: 123.123.123.123:6346<cr><lf>
+    Connection: close<cr><lf>
+    <cr><lf>
+
+where <File Index> and <File Name> are one of the File Index/File 
+Name pairs from a QueryHit message's Result Set.
+
+"Connection: close" means that the connection MUST be closed after the
+transfer. Servents MUST NOT attempt to download multiple files from
+the same connection at once. Files MUST be locally queued instead.
+
+For example, if the Result Set from a QueryHit message contained
+the entry
+
+    File Index: 2468
+    File Size: 4356789
+    File Name: Foobar.mp3
+
+then a download request for the file described by this entry would be
+initiated as follows:
+
+    GET /2468/Foobar.mp3 HTTP/1.1<cr><lf>
+    User-Agent: ROtella<cr><lf>
+    Host: 123.123.123.123:6346<cr><lf>
+    Connection: close<cr><lf>
+    <cr><lf>
+
+Servents MUST encode the filename in GET requests according the 
+standard URL/URI encoding rules. Servents MUST accept URL-encoded GET
+requests.
+
+The Host header is required by HTTP 1.1 and specifies what address 
+you have connected to. It is usually not used by the receiving 
+servent, but its presence is required by the protocol.
+
+The allowable values of the User-Agent string are defined by the HTTP
+standard. Servent developers cannot make any assumptions about the 
+value here. The use of 'ROtella' is for illustration purposes only. 
+
+The server receiving this download request responds with HTTP 1.1 
+compliant headers such as
+
+    HTTP/1.1 200 OK<cr><lf>
+    Server: ROtella<cr><lf>
+    Content-type: application/binary<cr><lf>
+    Content-length: 4356789<cr><lf>
+    <cr><lf>
+
+The file data then follows and should be read up to, and including, 
+the number of bytes specified in the Content-length provided in the 
+server's HTTP response.
+
+Headers unknown to the servent MUST be quietly ignored.
+
+
+4.2 Sharing
+
+Servents that are able to download files MUST also be able to share 
+files with others.
+
+Servents MUST NOT give precedence to other users using the same 
+servent. They MUST answer Query messages and accept file download
+requests using the same rules for all servents.
+
+Servents SHOULD avoid changing the index numbers of shared files.
+
+Servents MUST NOT share partially downloaded (incomplete) files as if
+they were complete. This is often done by using a separate directory 
+for incomplete downloads. When the download finishes, the file is 
+move to the downloads directory (that should be shared).
+
+
+5 Credits
+
+ROtella is a simplification of the Gnutella protocol, version 0.6.
+It is used as the specification for the practical assigment in the
+Redes de Ordenadores II (Computer Netwoks II) course in the Carlos III
+University of Madrid. For more details see
+http://www.it.uc3m.es/celeste/docencia/inf/rroo/
+
+This simplification has been made by Celeste Campo, with the help of
+Iciar Martínez, Carlos García Rubio, Andrés Marín y Rafael Sánchez.
+
+For the original Gnutella protocol, copyright (C) 2002, Tor
+Klingberg & Raphael Manfredi. All Rights Reserved. The Gnutella
+specification can be downloaded fromr
+http://rfc-gnutella.sourceforge.net/src/rfc-0_6-draft.html
