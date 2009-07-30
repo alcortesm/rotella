@@ -1,0 +1,10 @@
+ROTELLA DESIGN
+
+* Command Execution
+
+When the "rotella" command is executed the following tasks are performed sequentially:
+
+    1. parsing and processing of command arguments
+    2. parsing and processing of the configuration file
+    3. bootstrap to get an initial list of nodes
+    4. show prompt and process further user instructions
