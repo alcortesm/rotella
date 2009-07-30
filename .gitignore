@@ -1,3 +1,7 @@
 src/*.d
 src/*.o
 src/rotella
+src/cscope.in.out
+src/cscope.out
+src/cscope.po.out
+src/*swp

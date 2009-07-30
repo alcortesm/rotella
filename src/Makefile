@@ -27,8 +27,10 @@ uninstall:
 	- rm -f $(INSTALL_BIN)
 
 dist:
+	tar -cvzf rotella.tgz $(SRCS)
 
 TAGS:
+	cscope -b -q *.cpp *.h
 
 test:
 
@@ -36,6 +38,7 @@ clean:
 	- rm -f $(OBJS)
 	- rm -f $(BIN)
 	- rm -f $(DEPS)
+	- rm -f cscope.in.out cscope.out cscope.po.out
 	- rm -f *~
 
 nuke: clean
