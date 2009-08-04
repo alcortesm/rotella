@@ -9,10 +9,10 @@ To submit changes to the main repo:
 
  ; cd
  ; mount-git-repos
- ; cd ~/mnt/git-repos/netqos
+ ; cd ~/mnt/git-repos/rotella
 
  # add a new remote:
- # git remote add local file:///home/alcortes/local/git-cache/netqos
+ # git remote add local file:///home/alcortes/local/git-cache/rotella
  ; git fetch local
 
  # check out the changes
