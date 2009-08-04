@@ -1,10 +1,125 @@
-ROTELLA DESIGN
+ROTELLA SERVENT
 
-* Command Execution
+* Analysis
 
-When the "rotella" command is executed the following tasks are performed sequentially:
+
+** Use case
+
+The user write the configuration file with the desired values.
+
+The user launch the servent. The program read the configuration file and launch
+the server. The server bootstrap using the info from the configuration file,
+gets the "first host" and connects to it. The addresses of other servents are
+fetched to the new servent. The server connects to them.
+
+The server receives a "query" from other client but dosen't have the requested
+file, so it re-sends the query to its contacts.
+
+He then receives another query, he dosen't have the file, sends the query to
+its contacts. One of its contacts have the file so it sends a queryhit back to
+the server. The server then collect the queryhit and sends it back to the
+oryginal sender.
+
+Then the user ask for a file, the server issues a query to its contacts. Then
+it waits for the "queryhit". When the "queryhit" arraives the client connects to the
+owner of the file and start the download.
+
+After the download the user close the program, "bye"s are sent, the connections
+are closed the resources are freed.
+
+
+** program behavior
+
+When the "rotella" command is executed the following tasks are performed
+sequentially:
 
     1. parsing and processing of command arguments
     2. parsing and processing of the configuration file
-    3. bootstrap to get an initial list of nodes
-    4. show prompt and process further user instructions
+    3. boot the server
+    4. bootstrap to get an initial list of nodes
+    5. show prompt and process user commands as the main client task
+
+The client, that is, user commands processing will be executed concurrently,
+not only with itself but with the server.
+
+
+** Server Part
+
+(todo)
+
+
+** Client Part -- User Commands
+
+(todo)
+
+
+
+* Design
+
+
+** Concept/Classes
+
+:Command:
+
+commands are issued by the user in a string form and interpreted by
+the servent. The configuration file is also filled with commands, they will be
+the first commands to interpret by the servent.
+
+Commands would be translated into server actions, client actions or error
+messages. These actions will need to be executed concurrently with the actions
+of other commands and the prompt should be ready to accept more commands.
+
+Commands will perform a parsing of its string representation wich can lead to
+errors if the command was badly written. Commands can also be written back to
+a log file, for example.
+
+There will be a taxonomy of commands, as all of them will share some common
+verbs.
+
+:Action:
+
+Actions will be created as the result of parsing the commands, and will need
+to be queued and executed by an action executioner. Action will lead to the
+sending of packets, waiting for other events, printing results to the user...
+
+:Configuration:
+
+Configuration is a set of variables that need to be known by other parts of the
+system. Configuration variables will be set by user commands and the configuration file.
+
+Configurations can not be changed once created.
+
+There are 5 configurations values:
+
+    - rowebcache
+    - localport
+    - sharepath
+    - incomingpath
+    - downloadpath
+
+The server can not be run until the 5 values are known. The server will
+automatically boot when the last value is known.
+
+:Constants:
+
+Some variables can not be configured by the user either by commands during
+execution or by the configuration file, so they are more like "configuration
+constants".
+
+Their values are specified in the RFC:
+
+GUID_SZ 16 /* bytes, rotella_protocol.txt:95 */
+ASCII_CR 13 /* rotella_protocol.txt:140 */
+ASCII_LF 10 /* rotella_protocol.txt:140 */
+DEFAULT_PORT 6346 /* rotella_protocol:133 */
+MAX_SERVENTS_CONNECTED 3 /* rotella_protocol:223 */
+MAX_HOPS 7 /* rotella_protocol.txt:312 */
+MAX_MESSAGE_SZ 4 /* kB, rotella_protocol.txt:319 */
+MAX_TTL 15 /* rotella_protocol:335 */
+MAX_QUERY_SZ 256 /* bytes, rotella_protocol:344 */
+
+
+
+
+* Implementation
+
