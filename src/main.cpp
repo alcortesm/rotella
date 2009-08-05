@@ -19,9 +19,18 @@ check_args(int argc, char ** argv)
         usage();
 }
 
+void
+prompt(void)
+{
+    while (true)
+        sleep(1000);
+}
+
 int
 main(int argc, char ** argv)
 {
     check_args(argc, argv);
+    //getNodes();
+    prompt();
     exit(EXIT_SUCCESS);
 }
