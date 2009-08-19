@@ -1,5 +1,6 @@
 #include<cstdlib>
 #include<cstdio>
+#include<ctime>
 
 #include"utils.h"
 
@@ -11,7 +12,7 @@ usage(void)
 }
 
 void
-check_args(int argc, char ** argv)
+digest_args(int argc, char ** argv)
 {
     UNUSED(argv);
 
@@ -19,18 +20,35 @@ check_args(int argc, char ** argv)
         usage();
 }
 
+// create the configuration variables with
+// the values stored in the configuration
+// file or defaults where available
 void
-prompt(void)
+digest_conf_file()
 {
-    while (true)
-        sleep(1000);
+    return;
+}
+
+void
+inf_loop(void)
+{
+    const struct timespec onesec = {1, 0};
+    int r;
+
+    while (true) {
+        r = nanosleep(&onesec, NULL);
+        if (r == -1) {
+            perror("nanosleep");
+            exit(EXIT_FAILURE);
+        }
+    }
 }
 
 int
 main(int argc, char ** argv)
 {
-    check_args(argc, argv);
-    //getNodes();
-    prompt();
+    digest_args(argc, argv);
+    digest_conf_file();
+    inf_loop();
     exit(EXIT_SUCCESS);
 }
