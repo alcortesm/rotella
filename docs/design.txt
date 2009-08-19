@@ -82,12 +82,12 @@ Actions will be created as the result of parsing the commands, and will need
 to be queued and executed by an action executioner. Action will lead to the
 sending of packets, waiting for other events, printing results to the user...
 
-:Configuration:
+:Conf (Configuration):
 
 Configuration is a set of variables that need to be known by other parts of the
 system. Configuration variables will be set by user commands and the configuration file.
 
-Configurations can not be changed once created.
+Configurations can be changed once created, or so Rafa said.
 
 There are 5 configurations variables:
 
