@@ -37,10 +37,10 @@ sequentially:
     2. parsing and processing of the configuration file
     3. boot the server
     4. bootstrap to get an initial list of nodes
-    5. show prompt and process user commands as the main client task
+    5. listen to network queries
+    6. show prompt and process user commands as the main client task
 
-The client, that is, user commands processing will be executed concurrently,
-not only with itself but with the server.
+5 and 6 will be executed concurrently.
 
 
 ** Server Part
@@ -89,7 +89,7 @@ system. Configuration variables will be set by user commands and the configurati
 
 Configurations can not be changed once created.
 
-There are 5 configurations values:
+There are 5 configurations variables:
 
     - rowebcache
     - localport
@@ -99,6 +99,9 @@ There are 5 configurations values:
 
 The server can not be run until the 5 values are known. The server will
 automatically boot when the last value is known.
+
+If the configuration file doesn't define a valur for the 5 configuration
+variables, the program must exit in error.
 
 :Constants:
 
