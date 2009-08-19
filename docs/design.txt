@@ -100,8 +100,10 @@ There are 5 configurations variables:
 The server can not be run until the 5 values are known. The server will
 automatically boot when the last value is known.
 
-If the configuration file doesn't define a valur for the 5 configuration
-variables, the program must exit in error.
+If the configuration file doesn't define a valor for rowebcache, sharepath, incomingpath
+and downloadpath variables, the program must exit in error. If the variable localport is
+not defined in the configuration file the default value of 6346 will be used, see the
+Constant section bellow.
 
 :Constants:
 
