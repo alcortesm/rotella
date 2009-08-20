@@ -87,7 +87,9 @@ sending of packets, waiting for other events, printing results to the user...
 Configuration is a set of variables that need to be known by other parts of the
 system. Configuration variables will be set by user commands and the configuration file.
 
-Configurations can be changed once created, or so Rafa said.
+Configurations can be changed once created, or so Rafa said. But this is difficult
+in my opinion, so I will not implement this, and will use a simple struct instead of a
+class.
 
 There are 5 configurations variables:
 
