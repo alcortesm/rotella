@@ -3,6 +3,8 @@
 
 #include <string>
 
+const bool DEF_DEBUG         = true;
+
 const int GUID_SZ           = 16;   /* bytes, rotella_protocol.txt:95 */
 const int ASCII_CR          = 13;   /* rotella_protocol.txt:140 */
 const int ASCII_LF          = 10;   /* rotella_protocol.txt:140 */

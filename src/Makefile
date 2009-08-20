@@ -1,7 +1,6 @@
 BIN = rotella
 INSTALL_DIR = ~/bin
 SRCS = \
-    utils.cpp \
     main.cpp
 INCLUDES =
 LIBS =
@@ -34,6 +33,9 @@ TAGS:
 	cscope -b -q *.cpp *.h
 
 test:
+
+valgrind: $(BIN)
+	valgrind --tool=memcheck --show-reachable=yes --leak-check=full -q ./$(BIN)
 
 clean:
 	- rm -f $(OBJS)

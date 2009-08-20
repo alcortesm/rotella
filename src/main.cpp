@@ -1,3 +1,4 @@
+#include <iostream>
 #include <cstdlib>
 #include <cstdio>
 #include <ctime>
@@ -6,8 +7,11 @@
 #include "rotella.h"
 
 using std::string;
+using std::cout;
+using std::endl;
 
 struct conf conf;
+Debug_stream debug(cout, DEF_DEBUG);
 
 void
 usage(void)
@@ -33,8 +37,8 @@ digest_conf_file()
 {
     conf.localport = DEFAULT_PORT;
     conf.sharepath = string("Sharepath");
-    Dprintn(conf.localport);
-    Dprintn(conf.sharepath);
+    debug << conf.localport << endl;
+    debug << conf.sharepath << endl;
     return;
 }
 
