@@ -1,8 +1,13 @@
-#include<cstdlib>
-#include<cstdio>
-#include<ctime>
+#include <cstdlib>
+#include <cstdio>
+#include <ctime>
 
-#include"utils.h"
+#include "utils.h"
+#include "rotella.h"
+
+using std::string;
+
+struct conf conf;
 
 void
 usage(void)
@@ -26,6 +31,10 @@ digest_args(int argc, char ** argv)
 void
 digest_conf_file()
 {
+    conf.localport = DEFAULT_PORT;
+    conf.sharepath = string("Sharepath");
+    Dprintn(conf.localport);
+    Dprintn(conf.sharepath);
     return;
 }
 
@@ -49,6 +58,6 @@ main(int argc, char ** argv)
 {
     digest_args(argc, argv);
     digest_conf_file();
-    inf_loop();
+//    inf_loop();
     exit(EXIT_SUCCESS);
 }
