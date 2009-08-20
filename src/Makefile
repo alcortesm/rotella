@@ -1,6 +1,7 @@
 BIN = rotella
 INSTALL_DIR = ~/bin
 SRCS = \
+    utils.cpp \
     main.cpp
 INCLUDES =
 LIBS =
