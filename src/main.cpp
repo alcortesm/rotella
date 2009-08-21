@@ -7,26 +7,30 @@
 #include "rotella.h"
 
 using std::string;
-using std::cout;
 using std::endl;
 
 struct conf conf;
-Debug_stream debug(cout, DEF_DEBUG);
+Debug_stream debug(std::cout, DEF_DEBUG);
 
 void
 usage(void)
 {
-    fprintf(stderr, "Usage:\n\trotella\n");
+    std::cerr << "Usage:\n\trotella [-d]" << endl;
     exit(EXIT_FAILURE);
 }
 
 void
 digest_args(int argc, char ** argv)
 {
-    UNUSED(argv);
-
-    if (argc != 1)
+    if (argc > 2)
         usage();
+    if (argc == 2) {
+        if (string("-d") == argv[1]) {
+            debug.on() = true;
+        } else {
+            usage();
+        }
+    }
 }
 
 // create the configuration variables with
@@ -37,8 +41,14 @@ digest_conf_file()
 {
     conf.localport = DEFAULT_PORT;
     conf.sharepath = string("Sharepath");
+    conf.incomingpath = string("Incomingpath");
+    conf.downloadpath = string("Downloadpath");
+    conf.rowebcache = string("Rowebcache");
     debug << conf.localport << endl;
     debug << conf.sharepath << endl;
+    debug << conf.incomingpath << endl;
+    debug << conf.downloadpath << endl;
+    debug << conf.rowebcache << endl;
     return;
 }
 

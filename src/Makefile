@@ -37,6 +37,10 @@ test:
 valgrind: $(BIN)
 	valgrind --tool=memcheck --show-reachable=yes --leak-check=full -q ./$(BIN)
 
+debugvalgrind: $(BIN)
+	valgrind --tool=memcheck --show-reachable=yes --leak-check=full -q ./$(BIN) -d
+
+
 clean:
 	- rm -f $(OBJS)
 	- rm -f $(BIN)
