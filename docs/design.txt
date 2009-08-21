@@ -76,6 +76,14 @@ a log file, for example.
 There will be a taxonomy of commands, as all of them will share some common
 verbs.
 
+Possible commands are:
+    * find keyword
+    * get id
+    * info [option] ...
+    * stop id
+    * exit
+    * set [variable] [value]
+
 :Action:
 
 Actions will be created as the result of parsing the commands, and will need

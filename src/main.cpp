@@ -5,6 +5,7 @@
 
 #include "utils.h"
 #include "rotella.h"
+#include "Command.h"
 
 using std::string;
 using std::endl;
@@ -67,11 +68,18 @@ inf_loop(void)
     }
 }
 
+void
+test_command() {
+    Command c("hola");
+    debug << c << endl;;
+}
+
 int
 main(int argc, char ** argv)
 {
     digest_args(argc, argv);
     digest_conf_file();
+    test_command();
 //    inf_loop();
     exit(EXIT_SUCCESS);
 }
