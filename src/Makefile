@@ -1,6 +1,7 @@
 BIN = rotella
 INSTALL_DIR = ~/bin
 SRCS = \
+    Conf.cpp \
     Command.cpp \
     main.cpp
 INCLUDES =
