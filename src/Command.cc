@@ -1,7 +1,7 @@
 #include "Command.h"
 #include "utils.h"
 
-Command::Command(const std::string& rCommandStr)
+Command::Command(const std::string& rCommandStr) throw (std::invalid_argument)
 {
    mVerb = std::string("Verbo");
    mNumArgs = 2;
@@ -24,7 +24,7 @@ Command::NumArgs() const
 }
 
 const std::string&
-Command::rArg(int i) const
+Command::rArg(unsigned int i) const throw (std::invalid_argument)
 {
    return mArg[i];
 }
