@@ -7,9 +7,7 @@ To clone the repo into ~/tmp/:
 
 To submit changes to the main repo:
 
- ; cd
- ; mount-git-repos
- ; cd ~/mnt/git-repos/rotella
+ ; cd ; mount-git-repos ; cd ~/mnt/git-repos/rotella
 
  # add a new remote:
  # git remote add local file:///home/alcortes/local/git-cache/rotella
@@ -22,5 +20,4 @@ To submit changes to the main repo:
  # git checkout master
  ; git merge local/master
 
- ; cd
- ; unmount-git-repos
+ ; cd ; unmount-git-repos
