@@ -49,7 +49,6 @@ digest_args(int argc, char ** argv)
 int
 digest_conf_file()
 {
-    //const char * url = "hTTp://gwc.iblInx.coM:2108/gwc/cgi-BIn/fc";
     const char * url = "beacon.numberzero.org/beacon/gwc.php";
     try {
         conf_p = new Conf("12", "sharepath", "incomingpath", "downloadpath", url);
@@ -60,7 +59,6 @@ digest_conf_file()
         std::cerr << ba.what() << ": out of memory" << endl;
         return -1;
     }
-//    debug << *conf_p << endl;
     return 0;
 }
 
@@ -89,9 +87,9 @@ void
 test_webcache() {
     {
         const char * url = "hTTp://gwc.iblInx.coM:2108/gwc/cgi-BIn/fc";
-        Webcache * wcp;
+        Url * wcp;
         try {
-            wcp = new Webcache(url);
+            wcp = new Url(url);
         } catch (std::invalid_argument & ia) {
             std::cerr << ia.what() << endl;
             goto error;
@@ -107,9 +105,9 @@ test_webcache() {
     }
     {
         const char * url = "hTTp://gwc.iblinx.net:13/fc";
-        Webcache * wcp;
+        Url * wcp;
         try {
-            wcp = new Webcache(url);
+            wcp = new Url(url);
         } catch (std::invalid_argument & ia) {
             std::cerr << ia.what() << endl;
             goto error;
@@ -125,9 +123,9 @@ test_webcache() {
     }
     {
         const char * url = "http://gwc.iblinx.com/";
-        Webcache * wcp;
+        Url * wcp;
         try {
-            wcp = new Webcache(url);
+            wcp = new Url(url);
         } catch (std::invalid_argument & ia) {
             std::cerr << ia.what() << endl;
             goto error;
@@ -143,9 +141,9 @@ test_webcache() {
     }
     {
         const char * url = "hTTp://gwc.iblInx.coM:2108";
-        Webcache * wcp;
+        Url * wcp;
         try {
-            wcp = new Webcache(url);
+            wcp = new Url(url);
         } catch (std::invalid_argument & ia) {
             std::cerr << ia.what() << endl;
             goto error;
@@ -161,9 +159,9 @@ test_webcache() {
     }
     {
         const char * url = "hTTp://a";
-        Webcache * wcp;
+        Url * wcp;
         try {
-            wcp = new Webcache(url);
+            wcp = new Url(url);
         } catch (std::invalid_argument & ia) {
             std::cerr << ia.what() << endl;
             goto error;
@@ -179,9 +177,9 @@ test_webcache() {
     }
     {
         const char * url = "hTTp://a/bla/foo.sh";
-        Webcache * wcp;
+        Url * wcp;
         try {
-            wcp = new Webcache(url);
+            wcp = new Url(url);
         } catch (std::invalid_argument & ia) {
             std::cerr << ia.what() << endl;
             goto error;
@@ -197,9 +195,9 @@ test_webcache() {
     }
     {
         const char * url = "hTTp://a:1234";
-        Webcache * wcp;
+        Url * wcp;
         try {
-            wcp = new Webcache(url);
+            wcp = new Url(url);
         } catch (std::invalid_argument & ia) {
             std::cerr << ia.what() << endl;
             goto error;
@@ -215,9 +213,9 @@ test_webcache() {
     }
     {
         const char * url = "htatp://www.google.com:120/bla/foo.sh";
-        Webcache * wcp;
+        Url * wcp;
         try {
-            wcp = new Webcache(url);
+            wcp = new Url(url);
         } catch (std::invalid_argument & ia) {
             goto ok1;
         } catch (std::bad_alloc & ba) {
@@ -230,9 +228,9 @@ ok1:;
     }
     {
         const char * url = "ahttp://www.google.com:120/bla/foo.sh";
-        Webcache * wcp;
+        Url * wcp;
         try {
-            wcp = new Webcache(url);
+            wcp = new Url(url);
         } catch (std::invalid_argument & ia) {
             goto ok2;
         } catch (std::bad_alloc & ba) {
@@ -245,9 +243,9 @@ ok2:;
     }
     {
         const char * url = "http:/a/www.google.com:120/bla/foo.sh";
-        Webcache * wcp;
+        Url * wcp;
         try {
-            wcp = new Webcache(url);
+            wcp = new Url(url);
         } catch (std::invalid_argument & ia) {
             goto ok3;
         } catch (std::bad_alloc & ba) {
@@ -260,9 +258,9 @@ ok3:;
     }
     {
         const char * url = "http://:120/bla/foo.sh";
-        Webcache * wcp;
+        Url * wcp;
         try {
-            wcp = new Webcache(url);
+            wcp = new Url(url);
         } catch (std::invalid_argument & ia) {
             goto ok4;
         } catch (std::bad_alloc & ba) {
@@ -275,9 +273,9 @@ ok4:;
     }
     {
         const char * url = "http://www.google.com:12a0/bla/foo.sh";
-        Webcache * wcp;
+        Url * wcp;
         try {
-            wcp = new Webcache(url);
+            wcp = new Url(url);
         } catch (std::invalid_argument & ia) {
             goto ok5;
         } catch (std::bad_alloc & ba) {
@@ -289,9 +287,9 @@ ok4:;
 ok5:;
     {
         const char * url = "http:///";
-        Webcache * wcp;
+        Url * wcp;
         try {
-            wcp = new Webcache(url);
+            wcp = new Url(url);
         } catch (std::invalid_argument & ia) {
             goto ok6;
         } catch (std::bad_alloc & ba) {
@@ -304,9 +302,9 @@ ok6:;
     }
     {
         const char * url = "http://:32";
-        Webcache * wcp;
+        Url * wcp;
         try {
-            wcp = new Webcache(url);
+            wcp = new Url(url);
         } catch (std::invalid_argument & ia) {
             goto ok7;
         } catch (std::bad_alloc & ba) {
@@ -319,9 +317,9 @@ ok7:;
     }
     {
         const char * url = "http://www.google.com:-32/bla/foo.sh";
-        Webcache * wcp;
+        Url * wcp;
         try {
-            wcp = new Webcache(url);
+            wcp = new Url(url);
         } catch (std::invalid_argument & ia) {
             goto ok8;
         } catch (std::bad_alloc & ba) {
@@ -334,9 +332,9 @@ ok8:;
     }
     {
         const char * url = "http://www.google.com:999999/bla/foo.sh";
-        Webcache * wcp;
+        Url * wcp;
         try {
-            wcp = new Webcache(url);
+            wcp = new Url(url);
         } catch (std::invalid_argument & ia) {
             goto ok9;
         } catch (std::bad_alloc & ba) {
@@ -354,7 +352,7 @@ error:
 }
 
 void
-initialize(const Webcache & wc)
+initialize(const Url & wc)
 {
     UNUSED(wc);
     // create the socket
@@ -427,9 +425,9 @@ main(int argc, char ** argv)
     digest_args(argc, argv);
 
     {
-        test_webcache();
-        test_command();
-        exit(EXIT_SUCCESS);
+       //        test_webcache();
+       //        test_command();
+       //        exit(EXIT_SUCCESS);
     }
     
     int r;
