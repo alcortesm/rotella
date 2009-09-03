@@ -1,33 +1,37 @@
 #ifndef URL_H
 #define URL_H
 
-#include <string>
-#include <stdexcept>
+#include <string>    // USES, HASA & HASA-USES string interface
+#include <stdexcept> // USES invalid_argument & bad_alloc exceptions
 
-#include <netinet/ip.h>
+#include <netinet/ip.h> // HASA struct in_addr
 
 
-class Url {
-    public:
-        Url(const std::string & url) throw (std::invalid_argument, std::bad_alloc);
-        std::string proto() const { return proto_; };
-        uint16_t port() const { return port_; };
-        uint16_t port_nbo() const { return port_nbo_; };
-        std::string host() const { return host_; };
-        struct in_addr & addr() const throw (std::invalid_argument);
-        std::string & ip() const throw (std::invalid_argument);
-        std::string path() const { return path_; };
-        std::string orig() const { return orig_; };
-    private:
-        std::string orig_;
-        std::string proto_;
-        uint16_t port_;
-        uint16_t port_nbo_;
-        std::string host_;
-        mutable struct in_addr addr_;
-        mutable std::string ip_;
-        std::string path_;
-        void get_ip_and_addr() const throw (std::invalid_argument);
+class Url
+{
+ public:
+   Url(const std::string & url) throw (std::invalid_argument, std::bad_alloc);
+
+   std::string      Proto() const { return mProto; };
+   uint16_t         Port() const { return mPort; };
+   uint16_t         PortNbo() const { return mPortNbo; };
+   std::string      Host() const { return mHost; };
+   struct in_addr & rAddr() const throw (std::invalid_argument);
+   std::string &    rIp() const throw (std::invalid_argument);
+   std::string      Path() const { return mPath; };
+   std::string      Orig() const { return mOrig; };
+
+ private:
+   std::string mOrig;
+   std::string mProto;
+   uint16_t    mPort;
+   uint16_t    mPortNbo;
+   std::string mHost;
+   mutable struct in_addr mAddr;
+   mutable std::string mIp;
+   std::string mPath;
+   void get_ip_and_addr() const throw (std::invalid_argument);
 };
+
 std::ostream & operator<<(std::ostream & os, Url url);
 #endif // URL_H
