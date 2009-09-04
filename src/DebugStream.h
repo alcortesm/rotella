@@ -18,7 +18,7 @@
 #ifndef DEBUGSTREAM_H
 #define DEBUGSTREAM_H
 
-#include <ostream>
+#include <ostream> // HASA-USES ostream for writting data
 
 class DebugStream {
 private:

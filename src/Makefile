@@ -56,7 +56,6 @@ nuke: clean
 	- rm -f $(INSTALL_DIR)/$(BIN)
 
 
-
 $(BIN): $(OBJS)
 	$(CC) $(LFLAGS) $(INCLUDES) -o $@ $(OBJS) $(LIBS)
 
