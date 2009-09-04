@@ -1,6 +1,7 @@
 #include "Url.h"
 #include "utils.h"
-extern Debug_stream debug;
+#include "DebugStream.h"
+extern DebugStream debug;
 
 #include <sstream>
 #include <cstring>

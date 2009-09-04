@@ -15,12 +15,13 @@
 #include "rotella.h"
 #include "Command.h"
 #include "Conf.h"
+#include "DebugStream.h"
 
 using std::string;
 using std::endl;
 
 Conf * conf_p;
-Debug_stream debug(std::cout, DEF_DEBUG);
+DebugStream debug(std::cout, DEF_DEBUG);
 
 void
 usage(void)
