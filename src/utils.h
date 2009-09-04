@@ -1,3 +1,4 @@
+// -*- Mode: c++ -*-
 #ifndef UTILS_H
 #define UTILS_H
 
@@ -8,8 +9,13 @@
 /* prevent compiler warnings about unused variables */
 #define UNUSED(x) ((void)(x))
 
-int string2int(std::string & s) throw (std::invalid_argument);
+// string and int conversions
+int         string_to_int(std::string & s) throw (std::invalid_argument);
 std::string uint16_to_string(uint16_t i);
+uint16_t    int_to_uint16(int i) throw (std::invalid_argument);
+
+// c string handling
+void to_lower(char * s);
 
 // Stream to use for debugging
 // It is thread safe, but funny things can happend

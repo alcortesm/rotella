@@ -13,7 +13,7 @@ Conf::Conf(std::string localport, std::string sharepath,
     // localport and localport_nbo initilized bellow
 {
     try {
-        localport_ = string2int(localport);
+        localport_ = string_to_int(localport);
     } catch (std::invalid_argument & ia) {
         throw ;
     }

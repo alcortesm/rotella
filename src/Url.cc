@@ -17,22 +17,6 @@ using std::invalid_argument;
 using std::bad_alloc;
 using std::runtime_error;
 
-uint16_t
-int2uint16(int i) throw (invalid_argument) {
-   if (i < 0)
-      throw invalid_argument("less than 0");
-   if (i > 0xFFFF)
-      throw invalid_argument("greater than 0xFFFF");
-   return (uint16_t) i;
-}
-
-void
-tolower(char * s) {
-   char * cp;
-   for (cp=s; *cp; cp++)
-      *cp = tolower(*cp);
-}
-
 bool
 has_colon_slash_slash(const char * s) {
    return (strstr(s, COLON_SLASH_SLASH) != NULL);
@@ -77,7 +61,7 @@ parse_url(const string & url, string & proto, string & host, uint16_t & port, st
    if (!start)
       throw bad_alloc(); 
 
-   tolower(start);
+   to_lower(start);
    if (! has_colon_slash_slash(start))
       prefix_http_colon_slash_slash(&start);
    sz = strlen(start);
@@ -119,8 +103,8 @@ parse_url(const string & url, string & proto, string & host, uint16_t & port, st
       string ports;
       ports = string(port_start+1, port_sz-1); // we don't want the ':' to be part of the port
       try {
-         int tmp = string2int(ports);
-         port = int2uint16(tmp);
+         int tmp = string_to_int(ports);
+         port = int_to_uint16(tmp);
       } catch (invalid_argument & ia) {
          free(start);
          throw Url::MalformedUrlException();
