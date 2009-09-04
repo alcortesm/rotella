@@ -15,12 +15,7 @@ const int MAX_QUERY_SZ      = 256;  /* bytes, rotella_protocol.txt:344 */
 // constant strings for messages
 #define MSG_GET "GET "
 #define MSG_HTTPV " HTTP/1.1"
-#define HTTP_PROTO "http"
 #define TCP_PROTO "tcp"
-#define COLON_SLASH_SLASH "://"
-#define URL_PORT_SEPARATOR ":"
-#define URL_PATH_SEPARATOR "/"
-#define HTTP_DEFAULT_PORT 80
 
 // mix constants
 const bool DEF_DEBUG         = false;

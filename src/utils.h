@@ -9,6 +9,7 @@
 #define UNUSED(x) ((void)(x))
 
 int string2int(std::string & s) throw (std::invalid_argument);
+std::string uint16_to_string(uint16_t i);
 
 // Stream to use for debugging
 // It is thread safe, but funny things can happend

@@ -97,10 +97,10 @@ test_webcache() {
             std::cerr << ba.what() << ": out of memory" << endl;
             goto error;
         }
-        assert(wcp->proto() == "http");
-        assert(wcp->host()  == "gwc.iblinx.com");
-        assert(wcp->port()  == 2108);
-        assert(wcp->path()  == "/gwc/cgi-bin/fc");
+        assert(wcp->Proto() == "http");
+        assert(wcp->Host()  == "gwc.iblinx.com");
+        assert(wcp->Port()  == 2108);
+        assert(wcp->Path()  == "/gwc/cgi-bin/fc");
         delete wcp;
     }
     {
@@ -115,10 +115,10 @@ test_webcache() {
             std::cerr << ba.what() << ": out of memory" << endl;
             goto error;
         }
-        assert(wcp->proto() == "http");
-        assert(wcp->host()  == "gwc.iblinx.net");
-        assert(wcp->port()  == 13);
-        assert(wcp->path()  == "/fc");
+        assert(wcp->Proto() == "http");
+        assert(wcp->Host()  == "gwc.iblinx.net");
+        assert(wcp->Port()  == 13);
+        assert(wcp->Path()  == "/fc");
         delete wcp;
     }
     {
@@ -133,10 +133,10 @@ test_webcache() {
             std::cerr << ba.what() << ": out of memory" << endl;
             goto error;
         }
-        assert(wcp->proto() == "http");
-        assert(wcp->host()  == "gwc.iblinx.com");
-        assert(wcp->port()  == 80);
-        assert(wcp->path()  == "");
+        assert(wcp->Proto() == "http");
+        assert(wcp->Host()  == "gwc.iblinx.com");
+        assert(wcp->Port()  == 80);
+        assert(wcp->Path()  == "");
         delete wcp;
     }
     {
@@ -151,10 +151,10 @@ test_webcache() {
             std::cerr << ba.what() << ": out of memory" << endl;
             goto error;
         }
-        assert(wcp->proto() == "http");
-        assert(wcp->host()  == "gwc.iblinx.com");
-        assert(wcp->port()  == 2108);
-        assert(wcp->path()  == "");
+        assert(wcp->Proto() == "http");
+        assert(wcp->Host()  == "gwc.iblinx.com");
+        assert(wcp->Port()  == 2108);
+        assert(wcp->Path()  == "");
         delete wcp;
     }
     {
@@ -169,10 +169,10 @@ test_webcache() {
             std::cerr << ba.what() << ": out of memory" << endl;
             goto error;
         }
-        assert(wcp->proto() == "http");
-        assert(wcp->host()  == "a");
-        assert(wcp->port()  == 80);
-        assert(wcp->path()  == "");
+        assert(wcp->Proto() == "http");
+        assert(wcp->Host()  == "a");
+        assert(wcp->Port()  == 80);
+        assert(wcp->Path()  == "");
         delete wcp;
     }
     {
@@ -187,10 +187,10 @@ test_webcache() {
             std::cerr << ba.what() << ": out of memory" << endl;
             goto error;
         }
-        assert(wcp->proto() == "http");
-        assert(wcp->host()  == "a");
-        assert(wcp->port()  == 80);
-        assert(wcp->path()  == "/bla/foo.sh");
+        assert(wcp->Proto() == "http");
+        assert(wcp->Host()  == "a");
+        assert(wcp->Port()  == 80);
+        assert(wcp->Path()  == "/bla/foo.sh");
         delete wcp;
     }
     {
@@ -205,10 +205,10 @@ test_webcache() {
             std::cerr << ba.what() << ": out of memory" << endl;
             goto error;
         }
-        assert(wcp->proto() == "http");
-        assert(wcp->host()  == "a");
-        assert(wcp->port()  == 1234);
-        assert(wcp->path()  == "");
+        assert(wcp->Proto() == "http");
+        assert(wcp->Host()  == "a");
+        assert(wcp->Port()  == 1234);
+        assert(wcp->Path()  == "");
         delete wcp;
     }
     {

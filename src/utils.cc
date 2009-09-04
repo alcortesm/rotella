@@ -11,3 +11,11 @@ string2int(std::string & s) throw (std::invalid_argument) {
        throw std::invalid_argument(s + " is not a number");
     return i;
 }
+
+std::string
+uint16_to_string(uint16_t i)
+{
+   std::ostringstream oss;
+   oss<< i;
+   return oss.str();
+}
