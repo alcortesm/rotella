@@ -3,7 +3,7 @@
 #define URL_H
 
 #include <string>    // USES, HASA & HASA-USES string interface
-#include <stdexcept> // USES runtime_error, invalid_argument & bad_alloc exceptions
+#include <stdexcept> // USES runtime_error & bad_alloc exceptions
 
 #include <netinet/ip.h> // HASA struct in_addr
 
@@ -22,14 +22,26 @@ public:
       MalformedUrlException(std::string s) : std::runtime_error("Malformed URL: " + s) { }
    };
 
+   class NameResolutionException : public std::runtime_error {
+   public:
+      NameResolutionException() : std::runtime_error("Name resolution error") { }
+      NameResolutionException(std::string s) : std::runtime_error("Name resolution error: " + s) { }
+   };
+
+   class NetworkException : public std::runtime_error {
+   public:
+      NetworkException() : std::runtime_error("Network error") { }
+      NetworkException(std::string s) : std::runtime_error("Network error: " + s) { }
+   };
+
    Url(const std::string & url) throw (Url::MalformedUrlException, std::bad_alloc);
 
    const std::string &    Proto() const { return mProto; };
    uint16_t               Port() const { return mPort; };
    uint16_t               PortNbo() const { return mPortNbo; };
    const std::string &    Host() const { return mHost; };
-   const struct in_addr & Addr() const throw (std::runtime_error);
-   const std::string &    Ip() const throw (std::runtime_error);
+   const struct in_addr & Addr() const throw (Url::NameResolutionException, Url::NetworkException);
+   const std::string &    Ip() const throw (Url::NameResolutionException, Url::NetworkException);
    const std::string &    Path() const { return mPath; };
    const std::string &    Canonical() const {return mCanonical; };
 
@@ -43,7 +55,7 @@ private:
    std::string            mPath;
    std::string            mCanonical;
 
-   void get_ip_and_addr() const throw (std::runtime_error);
+   void get_ip_and_addr() const throw (Url::NameResolutionException, Url::NetworkException);
 };
 
 std::ostream & operator<<(std::ostream & os, Url url);

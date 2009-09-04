@@ -14,9 +14,8 @@ extern int h_errno;
 
 using std::string;
 using std::endl;
-using std::invalid_argument;
 using std::bad_alloc;
-using std::runtime_error;
+using std::invalid_argument;
 
 bool
 has_colon_slash_slash(const char * s) {
@@ -127,16 +126,16 @@ parse_url(const string & url, string & proto, string & host, uint16_t & port, st
 }
 
 void
-Url::get_ip_and_addr() const throw (runtime_error) {
+Url::get_ip_and_addr() const throw (Url::NameResolutionException, Url::NetworkException) {
    struct hostent * he;
    he = gethostbyname(mHost.c_str());
    if (!he) {
       switch (h_errno) {
-      case HOST_NOT_FOUND : throw invalid_argument(mHost + ": host not found");
-      case NO_DATA : throw invalid_argument(mHost + ": no IP for this host");
-      case NO_RECOVERY : throw invalid_argument("name server error while recovering " + mHost);
-      case TRY_AGAIN : throw invalid_argument("temporary error of name server while recovering " + mHost + ", try again later");
-      default : throw invalid_argument("unknown error with gethostbyname()");
+      case HOST_NOT_FOUND : throw Url::NameResolutionException(mHost + ": host not found");
+      case NO_DATA : throw Url::NameResolutionException(mHost + ": no IP for this host");
+      case NO_RECOVERY : throw Url::NameResolutionException("name server error while recovering " + mHost);
+      case TRY_AGAIN : throw Url::NameResolutionException("temporary error of name server while recovering " + mHost + ", try again later");
+      default : throw Url::NameResolutionException("unknown error with gethostbyname()");
       }
    }
    memcpy(&mAddr, &he->h_addr, sizeof(he->h_addr));
@@ -147,7 +146,7 @@ Url::get_ip_and_addr() const throw (runtime_error) {
    /* resolve the domain name into a list of addresses */
    error = getaddrinfo(mHost.c_str(), NULL, NULL, &ai);
    if (error != 0)
-      throw invalid_argument(gai_strerror(error));
+      throw Url::NetworkException(gai_strerror(error));
 
    struct addrinfo * curr_ai;
    struct sockaddr_in * sin;
@@ -161,26 +160,30 @@ Url::get_ip_and_addr() const throw (runtime_error) {
       }
    }
    freeaddrinfo(ai);
-   throw invalid_argument("no ipv4 address found");
+   throw Url::NetworkException("no ipv4 address found");
 }
 
 const std::string &
-Url::Ip() const throw (runtime_error) {
+Url::Ip() const throw (Url::NameResolutionException, Url::NetworkException) {
    try {
       if (mIp == "")
          get_ip_and_addr();
-   } catch (runtime_error & rte) {
+   } catch (Url::NameResolutionException & nre) {
+      throw;
+   } catch (Url::NetworkException & ne) {
       throw;
    }
    return mIp;
 }
 
 const struct in_addr &
-Url::Addr() const throw (runtime_error) {
+Url::Addr() const throw (Url::NameResolutionException, Url::NetworkException) {
    try {
       if (mIp == "")
          get_ip_and_addr();
-   } catch (runtime_error & rte) {
+   } catch (Url::NameResolutionException & nre) {
+      throw;
+   } catch (Url::NetworkException & ne) {
       throw;
    }
    return mAddr;
