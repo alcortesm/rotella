@@ -45,6 +45,8 @@ public:
    const std::string &    Path() const { return mPath; };
    const std::string &    Canonical() const {return mCanonical; };
 
+   static void            test(void);
+
 private:
    std::string            mProto;
    uint16_t               mPort;
