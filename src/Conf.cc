@@ -6,25 +6,25 @@
 #include <stdexcept>
 
 Conf::Conf(std::string & localPort, std::string & sharePath,
-        std::string & incomingPath, std::string & downloadPath,
+           std::string & incomingPath, std::string & downloadPath,
            std::string & webCache) throw (std::invalid_argument, std::bad_alloc)
-: mSharePath(sharePath), mIncomingPath(incomingPath),
+  : mSharePath(sharePath), mIncomingPath(incomingPath),
     mDownloadPath(downloadPath), mWebCache(webCache)
     // LocalPort and LocalPortNbo initilized bellow
 {
-    try {
-        mLocalPort = string_to_int(localPort);
-    } catch (std::invalid_argument & ia) {
-        throw ;
-    }
-    mLocalPortNbo = htons(mLocalPort);
+   try {
+      mLocalPort = string_to_int(localPort);
+   } catch (std::invalid_argument & ia) {
+      throw ;
+   }
+   mLocalPortNbo = htons(mLocalPort);
 }
 
 Conf::Conf(const char* localPort, const char* sharePath, const char* incomingPath,
-     const char* downloadPath, const char* webCache) throw (std::invalid_argument, std::bad_alloc)
-: mSharePath(sharePath), mIncomingPath(incomingPath), mDownloadPath(downloadPath),
-mWebCache(webCache)
-     // LocalPort and LocalPortNbo initilized bellow
+           const char* downloadPath, const char* webCache) throw (std::invalid_argument, std::bad_alloc)
+  : mSharePath(sharePath), mIncomingPath(incomingPath), mDownloadPath(downloadPath),
+    mWebCache(webCache)
+    // LocalPort and LocalPortNbo initilized bellow
 {
    try {
       std::string s(localPort);
@@ -45,5 +45,3 @@ operator<<(std::ostream & os, Conf c) {
       << "]";
    return os;
 }
-
-
