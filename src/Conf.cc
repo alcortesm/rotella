@@ -2,33 +2,48 @@
 #include "utils.h"
 
 #include <iostream>
-#include <string.h>
+#include <string>
 #include <stdexcept>
 
-Conf::Conf(std::string localport, std::string sharepath,
-        std::string incomingpath, std::string downloadpath,
-           std::string webcache) throw (std::invalid_argument, std::bad_alloc)
-: sharepath_(sharepath), incomingpath_(incomingpath),
-    downloadpath_(downloadpath), webcache_(webcache)
-    // localport and localport_nbo initilized bellow
+Conf::Conf(std::string & localPort, std::string & sharePath,
+        std::string & incomingPath, std::string & downloadPath,
+           std::string & webCache) throw (std::invalid_argument, std::bad_alloc)
+: mSharePath(sharePath), mIncomingPath(incomingPath),
+    mDownloadPath(downloadPath), mWebCache(webCache)
+    // LocalPort and LocalPortNbo initilized bellow
 {
     try {
-        localport_ = string_to_int(localport);
+        mLocalPort = string_to_int(localPort);
     } catch (std::invalid_argument & ia) {
         throw ;
     }
-    localport_nbo_ = htons(localport_);
+    mLocalPortNbo = htons(mLocalPort);
+}
+
+Conf::Conf(const char* localPort, const char* sharePath, const char* incomingPath,
+     const char* downloadPath, const char* webCache) throw (std::invalid_argument, std::bad_alloc)
+: mSharePath(sharePath), mIncomingPath(incomingPath), mDownloadPath(downloadPath),
+mWebCache(webCache)
+     // LocalPort and LocalPortNbo initilized bellow
+{
+   try {
+      std::string s(localPort);
+      mLocalPort = string_to_int(s);
+   } catch (std::invalid_argument & ia) {
+      throw ;
+   }
+   mLocalPortNbo = htons(mLocalPort);
 }
 
 std::ostream &
 operator<<(std::ostream & os, Conf c) {
-    os << "[Conf: localport=" << c.localport()
-        << ", sharepath=" << c.sharepath()
-        << ", incomingpath=" << c.incomingpath()
-        << ", downloadpath=" << c.downloadpath()
-        << ", webcache=" << c.webcache()
-        << "]";
-    return os;
+   os << "[Conf: localport=" << c.LocalPort()
+      << ", sharepath=" << c.sharepath()
+      << ", incomingpath=" << c.incomingpath()
+      << ", downloadpath=" << c.downloadpath()
+      << ", webcache=" << c.webcache()
+      << "]";
+   return os;
 }
 
 
