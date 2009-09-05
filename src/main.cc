@@ -152,6 +152,7 @@ initialize(const Url & wc)
       add_to_msg(msg, &offset, MSG_HTTP_GET.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_SPACE.c_str());
       add_to_msg(msg, &offset, wc.Path().c_str());
+      add_to_msg(msg, &offset, "?hostfile=1");
       add_to_msg(msg, &offset, MSG_HTTP_SPACE.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_VERSION.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_END.c_str());
