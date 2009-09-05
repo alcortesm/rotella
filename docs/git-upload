@@ -1,9 +1,9 @@
 #/bin/bash
 
 cd
-mount-git-repos
-cd ~/mnt/git-repos-rotella
-git fetch non-violin
-git merge non-violin/master
-cd
+mount-git-repos || exit
+cd ~/mnt/git-repos/rotella || exit
+git fetch non-violin || exit
+git merge non-violin/master || exit
+cd 
 unmount-git-repos
