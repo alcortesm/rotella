@@ -1,0 +1,9 @@
+#/bin/bash
+
+cd
+mount-git-repos
+cd ~/mnt/git-repos-rotella
+git fetch non-violin
+git merge non-violin/master
+cd
+unmount-git-repos

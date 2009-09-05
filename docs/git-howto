@@ -10,14 +10,15 @@ To submit changes to the main repo:
  ; cd ; mount-git-repos ; cd ~/mnt/git-repos/rotella
 
  # add a new remote:
- # git remote add local file:///home/alcortes/local/git-cache/rotella
- ; git fetch local
+ # git remote add non-violin file:///home/alcortes/local/git-cache/rotella
+ ; git fetch non-violin
 
  # check out the changes
- ; git log local/master ^master
+ ; git log non-violin/master ^master
 
  # If we are happy, merge:
  # git checkout master
- ; git merge local/master
+ ; git merge non-violin/master
+ # git remote rm non-violin
 
  ; cd ; unmount-git-repos
