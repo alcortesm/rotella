@@ -7,7 +7,6 @@ extern DebugStream debug;
 #include <cstring>
 #include <cstdlib>
 #include <netdb.h>
-extern int h_errno;
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>

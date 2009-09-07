@@ -144,10 +144,14 @@ initialize(const Url & wc)
 
    // send GET to obtain list of rotella nodes
    {
-      char msg[100];
+      char * msg;
+      size_t msgsz = 1024;
+      msg = (char *) calloc(msgsz, sizeof(char));
+      if (!msg) {
+         perror("calloc");
+         exit(EXIT_FAILURE);
+      }
       size_t offset = 0;
-
-      bzero(msg, 100);
 
       // GET /beacon/gwc.php?ping=1&client=RAZA&version=2.3.1&urlfile=1 HTTP/1.1\r\n
       // Host: beacon.numberzero.org\r\n
@@ -173,12 +177,18 @@ initialize(const Url & wc)
          exit(EXIT_FAILURE);
       }
       debug << "Sent \"" << msg << "\"" << std::endl;
+      free(msg);
    }
 
    // try to read response
    {
-      char * msg[2048];
-      bzero(msg, 2048);
+      char * msg;
+      size_t msgsz = 2048;
+      msg = (char *) calloc(msgsz, sizeof(char));
+      if (!msg) {
+         perror("calloc");
+         exit(EXIT_FAILURE);
+      }
 
       ssize_t nr;
       nr = recv(sock, msg, 2048, NO_RECV_FLAGS);
@@ -188,6 +198,7 @@ initialize(const Url & wc)
       }
 
       printf("%s\n", msg);
+      free(msg);
    }
 
    // close the socket
