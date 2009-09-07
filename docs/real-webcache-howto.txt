@@ -1,0 +1,15 @@
+; firefox http://grantgalitz.com/Beacon/gwc.php?ping=1&client=RAZA&version=2.3.1.3&urlfile=1
+PONG Beacon Cache II 0.8.0
+http://gwc.ak-electron.eu:12050/
+http://tertiary.udp-host-cache.com:8080/gwc/
+http://aniraws.com/bootstrap/skulls.php
+http://beacon.numberzero.org/beacon/gwc.php
+http://www.myfoxy.net/gwc/cgi-bin/fc
+http://gwc.cluephone.com/skulls.php
+http://gwc.lame.net/gwcii.php
+http://gwc.gofoxy.net:2108/gwc/cgi-bin/fc
+http://gweb.4octets.co.uk/skulls.php
+http://gwc.iblinx.com:2108/gwc/cgi-bin/fc
+
+Many web caches can be found using:
+; firefox http://gcachescan.jonatkins.com/
