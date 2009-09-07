@@ -12,11 +12,12 @@ LIBS =
 
 
 CC = g++
-CFLAGS = -Wfatal-errors -Werror -Wall -Wextra -std=c++98 -pedantic-errors -g
-LFLAGS =
+CFLAGS = -g3 -Wfatal-errors -Werror -Wall -Wextra -std=c++98 -pedantic-errors
+LFLAGS = -g3
 OBJS = $(SRCS:.cc=.o)
 DEPS = $(OBJS:.o=.d)
 INSTALL_BIN=$(INSTALL_DIR)/$(BIN)
+VALGRIND_FLAGS = --tool=memcheck --show-reachable=yes --leak-check=full -q
 
 
 
@@ -39,10 +40,10 @@ TAGS:
 test:
 
 valgrind: $(BIN)
-	valgrind --tool=memcheck --show-reachable=yes --leak-check=full -q ./$(BIN)
+	valgrind $(VALGRIND_FLAGS) ./$(BIN)
 
 debugvalgrind: $(BIN)
-	valgrind --tool=memcheck --show-reachable=yes --leak-check=full -q ./$(BIN) -d
+	valgrind $(VALGRIND_FLAGS) ./$(BIN) -d
 
 
 clean:
@@ -59,7 +60,7 @@ nuke: clean
 $(BIN): $(OBJS)
 	$(CC) $(LFLAGS) $(INCLUDES) -o $@ $(OBJS) $(LIBS)
 
-.cpp.o:
+.cc.o:
 	$(CC) -MMD $(CFLAGS) -c -o $@ $<
 	@sed -i -e '1s,\($*\)\.o[ :]*,\1.o $*.d: ,' $*.d
 
