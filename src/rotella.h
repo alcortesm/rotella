@@ -18,7 +18,7 @@ const int MAX_QUERY_SZ      = 256;  /* bytes, rotella_protocol.txt:344 */
 const std::string MSG_HTTP_GET("GET");
 const std::string MSG_HTTP_SPACE(" ");
 const std::string MSG_HTTP_VERSION("HTTP/1.1");
-const std::string MSG_HTTP_END("\r\n");
+const std::string MSG_HTTP_EOL("\r\n");
 #define TCP_PROTO "tcp"
 
 // mix constants

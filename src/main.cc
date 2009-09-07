@@ -149,13 +149,22 @@ initialize(const Url & wc)
 
       bzero(msg, 100);
 
+      // GET /beacon/gwc.php?ping=1&client=RAZA&version=2.3.1&urlfile=1 HTTP/1.1\r\n
+      // Host: beacon.numberzero.org\r\n
+      // \r\n
       add_to_msg(msg, &offset, MSG_HTTP_GET.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_SPACE.c_str());
       add_to_msg(msg, &offset, wc.Path().c_str());
-      add_to_msg(msg, &offset, "?hostfile=1");
+      add_to_msg(msg, &offset, "?client=RAZA&version=2.3.1&hostfile=1");
       add_to_msg(msg, &offset, MSG_HTTP_SPACE.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_VERSION.c_str());
-      add_to_msg(msg, &offset, MSG_HTTP_END.c_str());
+      add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
+      add_to_msg(msg, &offset, "Host: ");
+      add_to_msg(msg, &offset, wc.Host().c_str());
+      add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
+      add_to_msg(msg, &offset, "User-Agent: test");
+      add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
+      add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
 
       ssize_t ns;
       ns = send(sock, msg, offset, NO_SEND_FLAGS);
@@ -168,11 +177,11 @@ initialize(const Url & wc)
 
    // try to read response
    {
-      char * msg[100];
-      bzero(msg, 100);
+      char * msg[2048];
+      bzero(msg, 2048);
 
       ssize_t nr;
-      nr = recv(sock, msg, 100, NO_RECV_FLAGS);
+      nr = recv(sock, msg, 2048, NO_RECV_FLAGS);
       if (-1 == nr) {
          perror("recv");
          exit(EXIT_FAILURE);
