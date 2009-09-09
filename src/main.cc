@@ -153,20 +153,18 @@ initialize(const Url & wc)
       }
       size_t offset = 0;
 
-      // GET /beacon/gwc.php?ping=1&client=alcortes&version=1.0&urlfile=1 HTTP/1.1\r\n
-      // Host: beacon.numberzero.org\r\n
+      // GET /cgi-bin/qwebcache/gcache.cgi?hostfile=1 HTTP/1.1\r\n
+      // Host: monitor01.lab.it.uc3m.es\r\n
       // \r\n
       add_to_msg(msg, &offset, MSG_HTTP_GET.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_SPACE.c_str());
       add_to_msg(msg, &offset, wc.Path().c_str());
-      add_to_msg(msg, &offset, "?client=alcortes&version=1.0&hostfile=1");
+      add_to_msg(msg, &offset, "?hostfile=1");
       add_to_msg(msg, &offset, MSG_HTTP_SPACE.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_VERSION.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
       add_to_msg(msg, &offset, "Host: ");
       add_to_msg(msg, &offset, wc.Host().c_str());
-      add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
-      add_to_msg(msg, &offset, "User-Agent: test");
       add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
 
@@ -179,7 +177,6 @@ initialize(const Url & wc)
       debug << "Sent \"" << msg << "\"" << std::endl;
       free(msg);
    }
-
    // try to read response
    {
       char * msg;
@@ -212,21 +209,19 @@ initialize(const Url & wc)
       }
       size_t offset = 0;
 
-      // GET /beacon/gwc.php?client=alcortes&version=1.0&ip=163.117.15.15:3240 HTTP/1.1\r\n
-      // Host: beacon.numberzero.org\r\n
+      // GET /cgi-bin/gwebcache/gcache.cgi?ip=163.117.15.15:3240 HTTP/1.1\r\n
+      // Host: monitor01.lab.it.uc3m.es\r\n
       // \r\n
       add_to_msg(msg, &offset, MSG_HTTP_GET.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_SPACE.c_str());
       add_to_msg(msg, &offset, wc.Path().c_str());
-      add_to_msg(msg, &offset, "?client=alcortes&version=1.0&ip=");
+      add_to_msg(msg, &offset, "?ip=");
       add_to_msg(msg, &offset, "163.117.15.15:3240");
       add_to_msg(msg, &offset, MSG_HTTP_SPACE.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_VERSION.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
       add_to_msg(msg, &offset, "Host: ");
       add_to_msg(msg, &offset, wc.Host().c_str());
-      add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
-      add_to_msg(msg, &offset, "User-Agent: test");
       add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
 
