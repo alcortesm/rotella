@@ -50,7 +50,7 @@ digest_args(int argc, char ** argv)
 int
 digest_conf_file()
 {
-   const char * url = "beacon.numberzero.org/beacon/gwc.php";
+   const char * url = "http://monitor01.lab.it.uc3m.es/0012082/cgi-bin/gwebcache/gcache.cgi";
    try {
       conf_p = new Conf("12", "sharepath", "incomingpath", "downloadpath", url);
    } catch (std::invalid_argument & ia) {
@@ -142,6 +142,66 @@ initialize(const Url & wc)
       debug << "Connected to " << wc.Canonical() << std::endl;
    }
 
+   // send GET to update the webcache list with our IP
+   {
+      char * msg;
+      size_t msgsz = 1024;
+      msg = (char *) calloc(msgsz, sizeof(char));
+      if (!msg) {
+         perror("calloc");
+         exit(EXIT_FAILURE);
+      }
+      size_t offset = 0;
+
+      // GET /beacon/gwc.php?client=alcortes&version=1.0&ip=163.117.15.15:3240 HTTP/1.1\r\n
+      // Host: beacon.numberzero.org\r\n
+      // \r\n
+      add_to_msg(msg, &offset, MSG_HTTP_GET.c_str());
+      add_to_msg(msg, &offset, MSG_HTTP_SPACE.c_str());
+      add_to_msg(msg, &offset, wc.Path().c_str());
+      add_to_msg(msg, &offset, "?client=alcortes&version=1.0&ip=");
+      add_to_msg(msg, &offset, "163.117.15.15:3240");
+      add_to_msg(msg, &offset, MSG_HTTP_SPACE.c_str());
+      add_to_msg(msg, &offset, MSG_HTTP_VERSION.c_str());
+      add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
+      add_to_msg(msg, &offset, "Host: ");
+      add_to_msg(msg, &offset, wc.Host().c_str());
+      add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
+      add_to_msg(msg, &offset, "User-Agent: test");
+      add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
+      add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
+
+      ssize_t ns;
+      ns = send(sock, msg, offset, NO_SEND_FLAGS);
+      if (-1 == ns) {
+         perror("send");
+         exit(EXIT_FAILURE);
+      }
+      debug << "Sent \"" << msg << "\"" << std::endl;
+      free(msg);
+   }
+   // try to read response to update
+   {
+      char * msg;
+      size_t msgsz = 2048;
+      msg = (char *) calloc(msgsz, sizeof(char));
+      if (!msg) {
+         perror("calloc");
+         exit(EXIT_FAILURE);
+      }
+
+      ssize_t nr;
+      nr = recv(sock, msg, 2048, NO_RECV_FLAGS);
+      if (-1 == nr) {
+         perror("recv");
+         exit(EXIT_FAILURE);
+      }
+
+      printf("%s\n", msg);
+      free(msg);
+   }
+
+
    // send GET to obtain list of rotella nodes
    {
       char * msg;
@@ -159,7 +219,7 @@ initialize(const Url & wc)
       add_to_msg(msg, &offset, MSG_HTTP_GET.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_SPACE.c_str());
       add_to_msg(msg, &offset, wc.Path().c_str());
-      add_to_msg(msg, &offset, "?client=RAZA&version=2.3.1&hostfile=1");
+      add_to_msg(msg, &offset, "?client=alcortes&version=1.0&hostfile=1");
       add_to_msg(msg, &offset, MSG_HTTP_SPACE.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_VERSION.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
