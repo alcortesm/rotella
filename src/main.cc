@@ -12,6 +12,8 @@
 #include <netinet/tcp.h>
 #include <netdb.h>
 #include <cstring>
+#include <error.h>
+#include <errno.h>
 
 #include "Url.h"
 #include "utils.h"
@@ -126,10 +128,8 @@ http_get_response(const Url & rServer, const std::string & rQuery) throw (std::r
          tcp_proto = 6;
       }
       sock = socket(PF_INET, SOCK_STREAM, tcp_proto);
-      if (sock == -1) {
-         perror("socket");
-         exit(EXIT_FAILURE);
-      }
+      if (sock == -1)
+         throw std::runtime_error(string("socket") + strerror(errno));
    }
 
    // connect to webcache
@@ -147,8 +147,8 @@ http_get_response(const Url & rServer, const std::string & rQuery) throw (std::r
       int r;
       r = connect(sock, &server_sa, server_sa_len);
       if (r == -1) {
-         perror("connect");
-         exit(EXIT_FAILURE);
+         close(sock);
+         throw std::runtime_error(string("connect: ") + strerror(errno));
       }
       debug << "Connected to " << rServer.Canonical() << std::endl;
    }
@@ -247,8 +247,8 @@ initialize(const Url & rWebCache)
    try {
       p_response = http_get_response(rWebCache, *p_query);
    } catch (std::runtime_error & re) {
-      std::cerr << re.what() << endl;
-      exit(EXIT_FAILURE);      
+      delete p_query;
+      throw re;
    }
    debug << "Hostfile query response: \"" << *p_response << "\"" << std::endl;
    delete(p_response);
@@ -259,8 +259,8 @@ initialize(const Url & rWebCache)
    try {
       p_response = http_get_response(rWebCache, *p_query);
    } catch (std::runtime_error & re) {
-      std::cerr << re.what() << endl;
-      exit(EXIT_FAILURE);      
+      delete p_query;
+      throw re;      
    }
    debug << "Hostfile query response: \"" << *p_response << "\"" << std::endl;
    delete(p_response);
@@ -285,7 +285,13 @@ main(int argc, char ** argv)
    if (r == -1)
       exit(EXIT_FAILURE);
 
-   initialize(conf_p->webcache());
+   try {
+      initialize(conf_p->webcache());
+   } catch (std::runtime_error & re) {
+      std::cerr << re.what() << endl;
+      delete conf_p;
+      exit(EXIT_FAILURE);
+   }
    //    inf_loop();
    delete conf_p;
    exit(EXIT_SUCCESS);
