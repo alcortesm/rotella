@@ -12,7 +12,7 @@ LIBS =
 
 
 CC = g++
-CFLAGS = -g3 -Wfatal-errors -Werror -Wall -Wextra -std=c++98 -pedantic-errors
+CFLAGS = -g3 -O0 -Wfatal-errors -Werror -Wall -Wextra -std=c++98 -pedantic-errors
 LFLAGS = -g3
 OBJS = $(SRCS:.cc=.o)
 DEPS = $(OBJS:.o=.d)
