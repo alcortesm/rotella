@@ -5,6 +5,18 @@
 #include <string>
 #include <stdexcept>
 
+// create the configuration variables with
+// the values stored in the configuration
+// file or defaults where available
+Conf
+Conf::FromFile(const std::string & path) throw (std::invalid_argument, std::bad_alloc)
+{
+   UNUSED(path);
+   const char * url = "http://monitor01.lab.it.uc3m.es/0012082/cgi-bin/gwebcache/gcache.cgi";
+   return Conf::Conf("12", "sharepath", "incomingpath", "downloadpath", url);
+}
+
+
 Conf::Conf(std::string & localPort, std::string & sharePath,
            std::string & incomingPath, std::string & downloadPath,
            std::string & webCache) throw (std::invalid_argument, std::bad_alloc)

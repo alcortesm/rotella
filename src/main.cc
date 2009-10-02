@@ -25,7 +25,6 @@
 using std::string;
 using std::endl;
 
-Conf * conf_p;
 DebugStream debug(std::cout, DEF_DEBUG);
 
 void
@@ -47,25 +46,6 @@ digest_args(int argc, char ** argv)
          usage();
       }
    }
-}
-
-// create the configuration variables with
-// the values stored in the configuration
-// file or defaults where available
-int
-digest_conf_file()
-{
-   const char * url = "http://monitor01.lab.it.uc3m.es/0012082/cgi-bin/gwebcache/gcache.cgi";
-   try {
-      conf_p = new Conf("12", "sharepath", "incomingpath", "downloadpath", url);
-   } catch (std::invalid_argument & ia) {
-      std::cerr << ia.what() << endl;
-      return -1;
-   } catch (std::bad_alloc & ba) {
-      std::cerr << ba.what() << ": out of memory" << endl;
-      return -1;
-   }
-   return 0;
 }
 
 void
@@ -280,19 +260,13 @@ main(int argc, char ** argv)
 //       exit(EXIT_SUCCESS);
 //    }
     
-   int r;
-   r = digest_conf_file();
-   if (r == -1)
-      exit(EXIT_FAILURE);
+   Conf conf = Conf::FromFile();
 
    try {
-      initialize(conf_p->webcache());
+      initialize(conf.webcache());
    } catch (std::runtime_error & re) {
       std::cerr << re.what() << endl;
-      delete conf_p;
       exit(EXIT_FAILURE);
    }
-   //    inf_loop();
-   delete conf_p;
    exit(EXIT_SUCCESS);
 }

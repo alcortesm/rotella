@@ -9,11 +9,7 @@
 
 class Conf {
 public:
-   Conf(std::string & localPort, std::string & sharePath,
-        std::string & incomingPath, std::string & downloadPath,
-        std::string & webCache) throw (std::invalid_argument, std::bad_alloc);
-   Conf(const char* localPort, const char* sharePath, const char* incomingPath,
-        const char* downloadPath, const char* webCache) throw (std::invalid_argument, std::bad_alloc);
+   static Conf FromFile(const std::string & path = "./config") throw (std::invalid_argument, std::bad_alloc);
    int LocalPort() const { return mLocalPort; };
    uint16_t localport_nbo() const { return mLocalPortNbo; };
    const std::string & sharepath() const { return mSharePath; };
@@ -21,6 +17,11 @@ public:
    const std::string & downloadpath() const { return mDownloadPath; };
    const Url & webcache() const { return mWebCache; };
 private:
+   Conf(std::string & localPort, std::string & sharePath,
+        std::string & incomingPath, std::string & downloadPath,
+        std::string & webCache) throw (std::invalid_argument, std::bad_alloc);
+   Conf(const char* localPort, const char* sharePath, const char* incomingPath,
+        const char* downloadPath, const char* webCache) throw (std::invalid_argument, std::bad_alloc);
    int         mLocalPort;
    uint16_t    mLocalPortNbo;
    std::string mSharePath;
