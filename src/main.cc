@@ -24,6 +24,7 @@
 
 using std::string;
 using std::endl;
+using std::cerr;
 
 DebugStream debug(std::cout, DEF_DEBUG);
 
@@ -259,13 +260,19 @@ main(int argc, char ** argv)
 //       test_command();
 //       exit(EXIT_SUCCESS);
 //    }
-    
-   Conf conf = Conf::FromFile();
+
 
    try {
-      initialize(conf.webcache());
+      Conf conf = Conf::FromFile();
+      initialize(conf.wecache());
+   } catch (std::invalid_argument & ia) {
+      cerr << ia.what() << endl;
+      exit(EXIT_FAILURE);
+   } catch (std::bad_alloc & ba) {
+      cerr << ba.what() << endl;
+      exit(EXIT_FAILURE);
    } catch (std::runtime_error & re) {
-      std::cerr << re.what() << endl;
+      cerr << re.what() << endl;
       exit(EXIT_FAILURE);
    }
    exit(EXIT_SUCCESS);
