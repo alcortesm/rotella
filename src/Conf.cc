@@ -50,10 +50,10 @@ Conf::Conf(const char* localPort, const char* sharePath, const char* incomingPat
 std::ostream &
 operator<<(std::ostream & os, Conf c) {
    os << "[Conf: localport=" << c.LocalPort()
-      << ", sharepath=" << c.sharepath()
-      << ", incomingpath=" << c.incomingpath()
-      << ", downloadpath=" << c.downloadpath()
-      << ", webcache=" << c.webcache()
+      << ", sharepath=" << c.SharePath()
+      << ", incomingpath=" << c.IncomingPath()
+      << ", downloadpath=" << c.DownloadPath()
+      << ", webcache=" << c.WebCache()
       << "]";
    return os;
 }

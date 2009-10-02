@@ -11,11 +11,11 @@ class Conf {
 public:
    static Conf FromFile(const std::string & path = "./config") throw (std::invalid_argument, std::bad_alloc);
    int LocalPort() const { return mLocalPort; };
-   uint16_t localport_nbo() const { return mLocalPortNbo; };
-   const std::string & sharepath() const { return mSharePath; };
-   const std::string & incomingpath() const { return mIncomingPath; };
-   const std::string & downloadpath() const { return mDownloadPath; };
-   const Url & webcache() const { return mWebCache; };
+   uint16_t LocalPortNbo() const { return mLocalPortNbo; };
+   const std::string & SharePath() const { return mSharePath; };
+   const std::string & IncomingPath() const { return mIncomingPath; };
+   const std::string & DownloadPath() const { return mDownloadPath; };
+   const Url & WebCache() const { return mWebCache; };
 private:
    Conf(std::string & localPort, std::string & sharePath,
         std::string & incomingPath, std::string & downloadPath,
