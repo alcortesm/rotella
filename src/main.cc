@@ -218,35 +218,38 @@ http_get_response(const Url & rServer, const std::string & rQuery) throw (std::r
 }
 
 void
-initialize(const Url & rWebCache)
+initialize(const Url & rWebCache) throw (std::runtime_error)
 {
+   debug << "** Initialization started" << endl;
+
    std::string* p_query;
    std::string* p_response;
 
+   debug << "Sending Hostfile request..." << std::endl;
    p_query = new string("?hostfile=1");
-   debug << "Sending Hostfile request" << std::endl;
    try {
       p_response = http_get_response(rWebCache, *p_query);
    } catch (std::runtime_error & re) {
       delete p_query;
-      throw;
+      throw std::runtime_error(string("Initialization from webcache failed: ") + re.what());
    }
-   debug << "Hostfile query response: \"" << *p_response << "\"" << std::endl;
+   debug << "Received Hostfile response: \"" << *p_response << "\"" << std::endl;
    delete(p_response);
    delete(p_query);
 
    p_query = new string("?ip=101.102.103.104:105");
-   debug << "Sending Update request" << std::endl;
+   debug << "Sending Update request..." << std::endl;
    try {
       p_response = http_get_response(rWebCache, *p_query);
    } catch (std::runtime_error & re) {
       delete p_query;
       throw re;      
    }
-   debug << "Hostfile query response: \"" << *p_response << "\"" << std::endl;
+   debug << "Received update response: \"" << *p_response << "\"" << std::endl;
    delete(p_response);
    delete(p_query);
 
+   debug << "** Initialization finnished" << endl;
    return;
 }
 
