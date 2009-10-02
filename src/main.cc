@@ -110,7 +110,7 @@ http_get_response(const Url & rServer, const std::string & rQuery) throw (std::r
       }
       sock = socket(PF_INET, SOCK_STREAM, tcp_proto);
       if (sock == -1)
-         throw std::runtime_error(string("socket") + strerror(errno));
+         throw std::runtime_error(string("socket(): ") + strerror(errno));
    }
 
    // connect to webcache
@@ -129,7 +129,7 @@ http_get_response(const Url & rServer, const std::string & rQuery) throw (std::r
       r = connect(sock, &server_sa, server_sa_len);
       if (r == -1) {
          close(sock);
-         throw std::runtime_error(string("connect: ") + strerror(errno));
+         throw std::runtime_error(string("connect(): ") + strerror(errno));
       }
       debug << "Connected to " << rServer.Canonical() << std::endl;
    }
@@ -229,7 +229,7 @@ initialize(const Url & rWebCache)
       p_response = http_get_response(rWebCache, *p_query);
    } catch (std::runtime_error & re) {
       delete p_query;
-      throw re;
+      throw;
    }
    debug << "Hostfile query response: \"" << *p_response << "\"" << std::endl;
    delete(p_response);
@@ -264,16 +264,13 @@ main(int argc, char ** argv)
 
    try {
       Conf conf = Conf::FromFile();
-      initialize(conf.wecache());
-   } catch (std::invalid_argument & ia) {
-      cerr << ia.what() << endl;
-      exit(EXIT_FAILURE);
-   } catch (std::bad_alloc & ba) {
-      cerr << ba.what() << endl;
-      exit(EXIT_FAILURE);
-   } catch (std::runtime_error & re) {
-      cerr << re.what() << endl;
-      exit(EXIT_FAILURE);
+      initialize(conf.WebCache());
+   } catch (std::exception & e) {
+      cerr << e.what() << endl;
+      goto error;
    }
+
    exit(EXIT_SUCCESS);
+ error:
+   exit(EXIT_FAILURE);
 }
