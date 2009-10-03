@@ -356,31 +356,31 @@ parse_url(const string & url, string & proto, string & host, uint16_t & port, st
    const char * end;
    size_t sz;
 
-   const char * mProtostart;
-   const char * mProtoend;
-   size_t mProtosz;
+   const char * p_proto_start;
+   const char * p_proto_end;
+   size_t proto_sz;
     
-   const char * mHoststart;
-   const char * mHostend;
-   size_t mHostsz;
+   const char * p_host_start;
+   const char * p_host_end;
+   size_t host_sz;
     
-   const char * port_start;
-   const char * port_end;
+   const char * p_port_start;
+   const char * p_port_end;
    size_t port_sz;
     
-   const char * mPathstart;
-   const char * mPathend;
-   size_t mPathsz;
+   const char * p_path_start;
+   const char * p_path_end;
+   size_t path_sz;
 
    bool has_query;
-   char * mQuerystart;
-   const char * mQueryend;
-   size_t mQuerysz;
+   char * p_query_start;
+   const char * p_query_end;
+   size_t query_sz;
 
    bool has_anchor;
-   char * mAnchorstart;
-   const char * mAnchorend;
-   size_t mAnchorsz;
+   char * p_anchor_start;
+   const char * p_anchor_end;
+   size_t anchor_sz;
 
    // c_str copy to play with
    start = strdup(url.c_str());
@@ -399,96 +399,96 @@ parse_url(const string & url, string & proto, string & host, uint16_t & port, st
 
    // find if there is an anchor strip it
    // find anchor end
-   mAnchorend = end;
+   p_anchor_end = end;
    // find anchor start
-   mAnchorstart = strstr(start, URL_ANCHOR_SEPARATOR);
-   if (mAnchorstart == end-1) { // empty anchor or last character is '#'
+   p_anchor_start = strstr(start, URL_ANCHOR_SEPARATOR);
+   if (p_anchor_start == end-1) { // empty anchor or last character is '#'
       free(start);
       throw Url::MalformedUrlException(url + ": empty anchor");
    }
-   if (mAnchorstart == NULL) { // no anchor
+   if (p_anchor_start == NULL) { // no anchor
       has_anchor = false;
    } else {
       has_anchor = true;
-      mAnchorstart++; // advance the URL_ANCHOR_SEPARATOR
-      mAnchorsz = mAnchorend - mAnchorstart;
-      anchor = string(mAnchorstart, mAnchorsz);
-      mAnchorstart--; // go back to URL_ANCHOR_SEPARATOR
-      *mAnchorstart = '\0';
+      p_anchor_start++; // advance the URL_ANCHOR_SEPARATOR
+      anchor_sz = p_anchor_end - p_anchor_start;
+      anchor = string(p_anchor_start, anchor_sz);
+      p_anchor_start--; // go back to URL_ANCHOR_SEPARATOR
+      *p_anchor_start = '\0';
       sz = strlen(start);
       end = start + sz;
    }
 
    // find if there is a query and strip it
    // find query end
-   mQueryend = end;
+   p_query_end = end;
    // find anchor start
-   mQuerystart = strstr(start, URL_QUERY_SEPARATOR);
-   if (mQuerystart == end-1) { // empty query or last character is '#', strip it
+   p_query_start = strstr(start, URL_QUERY_SEPARATOR);
+   if (p_query_start == end-1) { // empty query or last character is '#', strip it
       free(start);
       throw Url::MalformedUrlException(url + ": empty query");
    }
-   if (mQuerystart == NULL) { // no query
+   if (p_query_start == NULL) { // no query
       has_query = false;
    } else { // there is a query, store it and strip it
       has_query = true;
-      mQuerystart++; // advance the URL_QUERY_SEPARATOR
-      mQuerysz = mQueryend - mQuerystart;
-      query = string(mQuerystart, mQuerysz);
-      mQuerystart--; // go back to URL_ANCHOR_SEPARATOR
-      *mQuerystart = '\0';
+      p_query_start++; // advance the URL_QUERY_SEPARATOR
+      query_sz = p_query_end - p_query_start;
+      query = string(p_query_start, query_sz);
+      p_query_start--; // go back to URL_ANCHOR_SEPARATOR
+      *p_query_start = '\0';
       sz = strlen(start);
       end = start + sz;
    }
 
    // find proto start
-   mProtostart = strstr(start, HTTP_PROTO);
-   if (mProtostart != start) {
+   p_proto_start = strstr(start, HTTP_PROTO);
+   if (p_proto_start != start) {
       free(start);
       throw Url::MalformedUrlException(url + ": don't start with \"http\"");
    }
    // find proto end
-   mProtoend = strstr(mProtostart, COLON_SLASH_SLASH);
-   if (mProtoend != mProtostart + strlen(HTTP_PROTO)) {
+   p_proto_end = strstr(p_proto_start, COLON_SLASH_SLASH);
+   if (p_proto_end != p_proto_start + strlen(HTTP_PROTO)) {
       free(start);
       throw Url::MalformedUrlException(url + ": \"://\" not found after protocol");
    }
    // get proto
-   mProtosz = mProtoend - mProtostart;
-   proto = string(mProtostart, mProtosz);
+   proto_sz = p_proto_end - p_proto_start;
+   proto = string(p_proto_start, proto_sz);
    //    debug << "proto=" << proto << endl;
 
 
    // find host start
-   mHoststart = mProtoend + strlen(COLON_SLASH_SLASH);
+   p_host_start = p_proto_end + strlen(COLON_SLASH_SLASH);
 
 
 
    // find path end
-   mPathend = end;
+   p_path_end = end;
    // find path start
-   mPathstart = strstr(mHoststart, URL_PATH_SEPARATOR);
-   if (!mPathstart)
-      mPathstart = mPathend;
+   p_path_start = strstr(p_host_start, URL_PATH_SEPARATOR);
+   if (!p_path_start)
+      p_path_start = p_path_end;
    // get path
-   mPathsz = mPathend - mPathstart;
-   if (mPathsz == 1)
-      mPathsz = 0; // if path is "/" there is no path
-   path = string(mPathstart, mPathsz);
+   path_sz = p_path_end - p_path_start;
+   if (path_sz == 1)
+      path_sz = 0; // if path is "/" there is no path
+   path = string(p_path_start, path_sz);
    //    debug << "path="  << path  << endl; 
 
    // find port end
-   port_end = mPathstart;
+   p_port_end = p_path_start;
    // find port start
-   port_start = strstr(mHoststart, URL_PORT_SEPARATOR);
+   p_port_start = strstr(p_host_start, URL_PORT_SEPARATOR);
    // get port
-   if (!port_start) {
-      port_start = port_end;
+   if (!p_port_start) {
+      p_port_start = p_port_end;
       port = (uint16_t) HTTP_DEFAULT_PORT;
    } else {
-      port_sz = port_end - port_start;
+      port_sz = p_port_end - p_port_start;
       string ports;
-      ports = string(port_start+1, port_sz-1); // we don't want the ':' to be part of the port
+      ports = string(p_port_start+1, port_sz-1); // we don't want the ':' to be part of the port
       try {
          int tmp = string_to_int(ports);
          port = int_to_uint16(tmp);
@@ -500,14 +500,14 @@ parse_url(const string & url, string & proto, string & host, uint16_t & port, st
    //    debug << "port="  << port  << endl;
 
    // find host end
-   mHostend = port_start;
+   p_host_end = p_port_start;
    // get host
-   mHostsz = mHostend - mHoststart;
-   if (mHostsz == 0) {
+   host_sz = p_host_end - p_host_start;
+   if (host_sz == 0) {
       free(start);
       throw Url::MalformedUrlException(url + ": host name not found");
    }
-   host = string(mHoststart, mHostsz);
+   host = string(p_host_start, host_sz);
    //    debug << "host="  << host  << endl;
    
    free(start);
