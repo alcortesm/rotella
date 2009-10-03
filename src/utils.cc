@@ -51,3 +51,11 @@ throw_fname(const char * fname, const char * reason)
 {
    throw std::runtime_error(std::string(fname) + "(): " + reason);
 }
+
+bool
+begins_with(std::string a, std::string b)
+{
+   if (a.compare(0, b.size(), b) == 0)
+      return true;
+   return false;
+}

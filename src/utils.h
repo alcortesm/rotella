@@ -20,4 +20,7 @@ void to_lower(char * s);
 void throw_fname_errno(const char * fname) throw (std::runtime_error);
 void throw_fname(const char * fname, const char * reason) throw (std::runtime_error);
 
+// string handling
+bool begins_with(std::string a, std::string b);
+
 #endif // UTILS_H

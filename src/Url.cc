@@ -648,11 +648,13 @@ Url::Url(const std::string & rProto,
    mCanonical.append(uint16_to_string(mPort));
    mCanonical.append(mPath);
    if (HasQuery()) {
-      mCanonical.append(URL_QUERY_SEPARATOR);
+      if (! begins_with(mQuery, URL_QUERY_SEPARATOR))
+         mCanonical.append(URL_QUERY_SEPARATOR);
       mCanonical.append(mQuery);
    }
    if (HasAnchor()) {
-      mCanonical.append(URL_ANCHOR_SEPARATOR);
+      if (! begins_with(mAnchor, URL_ANCHOR_SEPARATOR))
+         mCanonical.append(URL_ANCHOR_SEPARATOR);
       mCanonical.append(mAnchor);
    }
    debug << *this << endl ;
