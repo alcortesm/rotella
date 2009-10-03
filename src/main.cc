@@ -79,7 +79,6 @@ add_to_msg(char* const msg, size_t* const poffset, const char* string)
    *poffset += sz;   
 }
 
-// TODO add suport to throw exceptions
 // TODO recv should be OK with fragmentation
 //
 // opens a socket, connect to the http server,
@@ -89,7 +88,7 @@ add_to_msg(char* const msg, size_t* const poffset, const char* string)
 // as a string.
 // If there is an error, throws an exception.
 std::string *
-http_get_response(const Url & rServer, const std::string & rQuery) throw (std::runtime_error)
+http_get(const Url & rUrl) throw (std::runtime_error)
 {
    // open the socket
    int sock;
@@ -119,8 +118,8 @@ http_get_response(const Url & rServer, const std::string & rQuery) throw (std::r
       {
          struct sockaddr_in server_in = {0, 0, {0}, {0}};
          server_in.sin_family = AF_INET;
-         server_in.sin_port = rServer.PortNbo();
-         server_in.sin_addr = rServer.Addr();
+         server_in.sin_port = rUrl.PortNbo();
+         server_in.sin_addr = rUrl.Addr();
          memcpy((void *) &server_sa, (const void *) &server_in, sizeof(server_in));
       }
 
@@ -130,7 +129,7 @@ http_get_response(const Url & rServer, const std::string & rQuery) throw (std::r
          close(sock);
          throw_fname_errno("connect");
       }
-      debug << "Connected to " << rServer.Canonical() << std::endl;
+      debug << "Connected to " << rUrl.Canonical() << std::endl;
    }
 
    // send GET to obtain list of rotella nodes
@@ -148,8 +147,8 @@ http_get_response(const Url & rServer, const std::string & rQuery) throw (std::r
       // \r\n
       add_to_msg(msg, &offset, MSG_HTTP_GET.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_SPACE.c_str());
-      add_to_msg(msg, &offset, rServer.Path().c_str());
-      add_to_msg(msg, &offset, rQuery.c_str());
+      add_to_msg(msg, &offset, rUrl.Path().c_str());
+      add_to_msg(msg, &offset, rUrl.Query().c_str());
       add_to_msg(msg, &offset, MSG_HTTP_SPACE.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_VERSION.c_str());
       add_to_msg(msg, &offset, MSG_HTTP_EOL.c_str());
@@ -221,32 +220,27 @@ initialize(const Url & rWebCache) throw (std::runtime_error)
 {
    debug << "** Initialization started" << endl;
 
-   std::string* p_query;
    std::string* p_response;
 
    debug << "Sending Hostfile request..." << std::endl;
-   p_query = new string("?hostfile=1");
    try {
-      p_response = http_get_response(rWebCache, *p_query);
+      Url hostfile_query = Url::AddQuery(rWebCache, "?hostfile=1");
+      p_response = http_get(hostfile_query);
    } catch (std::runtime_error & re) {
-      delete p_query;
       throw std::runtime_error(string("Initialization from webcache failed: ") + re.what());
    }
    debug << "Received Hostfile response: \"" << *p_response << "\"" << std::endl;
    delete(p_response);
-   delete(p_query);
 
-   p_query = new string("?ip=101.102.103.104:105");
    debug << "Sending Update request..." << std::endl;
    try {
-      p_response = http_get_response(rWebCache, *p_query);
+      Url ip_query = Url::AddQuery(rWebCache, "?ip=101.102.103.104:105");
+      p_response = http_get(ip_query);
    } catch (std::runtime_error & re) {
-      delete p_query;
       throw re;      
    }
    debug << "Received update response: \"" << *p_response << "\"" << std::endl;
    delete(p_response);
-   delete(p_query);
 
    debug << "** Initialization finnished" << endl;
    return;
