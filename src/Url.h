@@ -57,11 +57,13 @@ public:
 private:
    std::string            mProto;
    uint16_t               mPort;
-   uint16_t               mPortNbo;
+   uint16_t               mPortNbo; // port in network byte order
    std::string            mDomain;
-   std::string            mPath;
-   std::string            mQuery;
-   std::string            mAnchor;
+   std::string            mPath;   // includes the path separator
+   std::string            mQuery;  // includes the query separator
+   std::string            mAnchor; // includes the anchor separator
+   /* mAddr and mIp will only be resolved upon request (by its access methods)
+      to prevent premature network traffic from the resolver */
    mutable struct in_addr mAddr;
    mutable std::string    mIp;
    std::string            mCanonical;

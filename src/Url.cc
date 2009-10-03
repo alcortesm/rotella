@@ -29,27 +29,52 @@ using std::invalid_argument;
 /* static */ void
 Url::test(void)
 {
+   // test the private constructor
+   // this test involves a DNS resolution, you'll need a working resolver
+   // of it.uc3m.es
    {
       const char * proto = "http";
       const char * domain = "it.uc3m.es";
+      const char * ip = "163.117.139.31";
       uint16_t port = 8080;
       const char * path = "/alcortes/index.html";
-      const char * query = "test.php";
+      const char * query = "test.php?other=yes";
       const char * anchor = "bla";
+      const char * canonical = "http://it.uc3m.es:8080/alcortes/index.html?test.php?other=yes#bla";
 
       try {
          Url url = Url(proto, port, domain, path, query, anchor);
          assert(url.Proto() == proto);
-         assert(url.Domain()  == domain);
-         assert(url.Port()  == port);
-         assert(url.Path()  == path);
-         assert(url.Query()  == query);
-         assert(url.Anchor()  == anchor);
+         assert(url.Port() == port);
+         assert(url.PortNbo() == htons(port));
+         assert(url.Domain() == domain);
+         struct in_addr ia;
+         {
+            int r = inet_aton(ip, &ia);
+            if (r == 0) {
+               std::cerr << "Provided an invalid ip: %s\n" << endl;
+               goto error;
+            }
+         }
+         assert(memcmp(&url.Addr(), &ia, sizeof(ia)) == 0);
+         assert(url.Ip() == "163.117.139.31");
+         assert(url.Path() == path);
+         assert(url.Query() == query);
+         assert(url.Anchor() == anchor);
+         assert(url.Canonical() == canonical);
+         assert(url.HasQuery() == true);
+         assert(url.HasAnchor() == true);
       } catch (Url::MalformedUrlException & mue) {
          std::cerr << mue.what() << endl;
          goto error;
       } catch (std::bad_alloc & ba) {
          std::cerr << ba.what() << ": out of memory" << endl;
+         goto error;
+      } catch (Url::NameResolutionException & nre) {
+         std::cerr << nre.what() << endl;
+         goto error;
+      } catch (Url::NetworkException & ne) {
+         std::cerr << ne.what() << endl;
          goto error;
       }
    }
@@ -69,6 +94,7 @@ Url::test(void)
       assert(p_url->Domain()  == "gwc.iblinx.com");
       assert(p_url->Port()  == 2108);
       assert(p_url->Path()  == "/gwc/cgi-bin/fc");
+      delete(p_url);
    }
    {
       const char * url_txt = "hTTp://gwc.iblinx.net:13/fc?bla.php#foobar";
