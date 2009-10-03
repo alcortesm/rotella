@@ -1,6 +1,7 @@
 BIN = rotella
 INSTALL_DIR = ~/bin
 SRCS = \
+    http.cc \
     Url.cc \
     Conf.cc \
     Command.cc \
