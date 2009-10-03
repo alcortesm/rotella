@@ -31,16 +31,16 @@ Url::test(void)
 {
    {
       const char * proto = "http";
-      const char * host = "it.uc3m.es";
+      const char * domain = "it.uc3m.es";
       uint16_t port = 8080;
       const char * path = "/alcortes/index.html";
       const char * query = "test.php";
       const char * anchor = "bla";
 
       try {
-         Url url = Url(proto, port, host, path, query, anchor);
+         Url url = Url(proto, port, domain, path, query, anchor);
          assert(url.Proto() == proto);
-         assert(url.Host()  == host);
+         assert(url.Domain()  == domain);
          assert(url.Port()  == port);
          assert(url.Path()  == path);
          assert(url.Query()  == query);
@@ -66,7 +66,7 @@ Url::test(void)
          goto error;
       }
       assert(p_url->Proto() == "http");
-      assert(p_url->Host()  == "gwc.iblinx.com");
+      assert(p_url->Domain()  == "gwc.iblinx.com");
       assert(p_url->Port()  == 2108);
       assert(p_url->Path()  == "/gwc/cgi-bin/fc");
    }
@@ -83,7 +83,7 @@ Url::test(void)
          goto error;
       }
       assert(p_url->Proto() == "http");
-      assert(p_url->Host()  == "gwc.iblinx.net");
+      assert(p_url->Domain()  == "gwc.iblinx.net");
       assert(p_url->Port()  == 13);
       assert(p_url->Path()  == "/fc");
       assert(p_url->Query()  == "bla.php");
@@ -103,7 +103,7 @@ Url::test(void)
          goto error;
       }
       assert(p_url->Proto() == "http");
-      assert(p_url->Host()  == "gwc.iblinx.com");
+      assert(p_url->Domain()  == "gwc.iblinx.com");
       assert(p_url->Port()  == 80);
       assert(p_url->Path()  == "");
       delete p_url;
@@ -121,7 +121,7 @@ Url::test(void)
          goto error;
       }
       assert(p_url->Proto() == "http");
-      assert(p_url->Host()  == "gwc.iblinx.com");
+      assert(p_url->Domain()  == "gwc.iblinx.com");
       assert(p_url->Port()  == 2108);
       assert(p_url->Path()  == "");
       delete p_url;
@@ -139,7 +139,7 @@ Url::test(void)
          goto error;
       }
       assert(p_url->Proto() == "http");
-      assert(p_url->Host()  == "gwc.iblinx.com");
+      assert(p_url->Domain()  == "gwc.iblinx.com");
       assert(p_url->Port()  == 2108);
       assert(p_url->Path()  == "");
       assert(p_url->Anchor() == "bla");
@@ -158,7 +158,7 @@ Url::test(void)
          goto error;
       }
       assert(p_url->Proto() == "http");
-      assert(p_url->Host()  == "a");
+      assert(p_url->Domain()  == "a");
       assert(p_url->Port()  == 80);
       assert(p_url->Path()  == "");
       delete p_url;
@@ -176,7 +176,7 @@ Url::test(void)
          goto error;
       }
       assert(p_url->Proto() == "http");
-      assert(p_url->Host()  == "a");
+      assert(p_url->Domain()  == "a");
       assert(p_url->Port()  == 80);
       assert(p_url->Path()  == "/bla/foo.sh");
       delete p_url;
@@ -194,7 +194,7 @@ Url::test(void)
          goto error;
       }
       assert(p_url->Proto() == "http");
-      assert(p_url->Host()  == "a");
+      assert(p_url->Domain()  == "a");
       assert(p_url->Port()  == 1234);
       assert(p_url->Path()  == "");
       delete p_url;
@@ -255,7 +255,7 @@ Url::test(void)
          std::cerr << ba.what() << ": out of memory" << endl;
          goto error;
       }
-      std::cerr << "An exception was not thrown (no host name with port)" << endl;
+      std::cerr << "An exception was not thrown (no domain name with port)" << endl;
       exit(EXIT_FAILURE);
    ok4:;
    }
@@ -284,7 +284,7 @@ Url::test(void)
             std::cerr << ba.what() << ": out of memory" << endl;
             goto error;
          }
-         std::cerr << "An exception was not thrown (no host, no port, no path)" << endl;
+         std::cerr << "An exception was not thrown (no domain, no port, no path)" << endl;
          exit(EXIT_FAILURE);
       ok6:;
       }
@@ -299,7 +299,7 @@ Url::test(void)
             std::cerr << ba.what() << ": out of memory" << endl;
             goto error;
          }
-         std::cerr << "An exception was not thrown (no host, no path)" << endl;
+         std::cerr << "An exception was not thrown (no domain, no path)" << endl;
          exit(EXIT_FAILURE);
       ok7:;
       }
@@ -359,7 +359,7 @@ prefix_http_colon_slash_slash(char* * sp) throw (bad_alloc) {
 }
 
 void
-parse_url(const string & url, string & proto, uint16_t & port, string & host,  string & path, string & query, string & anchor)
+parse_url(const string & url, string & proto, uint16_t & port, string & domain,  string & path, string & query, string & anchor)
    throw (Url::MalformedUrlException, bad_alloc) {
    char * start;
    const char * end;
@@ -369,9 +369,9 @@ parse_url(const string & url, string & proto, uint16_t & port, string & host,  s
    const char * p_proto_end;
    size_t proto_sz;
     
-   const char * p_host_start;
-   const char * p_host_end;
-   size_t host_sz;
+   const char * p_domain_start;
+   const char * p_domain_end;
+   size_t domain_sz;
     
    const char * p_port_start;
    const char * p_port_end;
@@ -468,15 +468,15 @@ parse_url(const string & url, string & proto, uint16_t & port, string & host,  s
    //    debug << "proto=" << proto << endl;
 
 
-   // find host start
-   p_host_start = p_proto_end + Url::DOMAIN_SEPARATOR.size();
+   // find domain start
+   p_domain_start = p_proto_end + Url::DOMAIN_SEPARATOR.size();
 
 
 
    // find path end
    p_path_end = end;
    // find path start
-   p_path_start = strstr(p_host_start, Url::PATH_SEPARATOR.c_str());
+   p_path_start = strstr(p_domain_start, Url::PATH_SEPARATOR.c_str());
    if (!p_path_start)
       p_path_start = p_path_end;
    // get path
@@ -489,7 +489,7 @@ parse_url(const string & url, string & proto, uint16_t & port, string & host,  s
    // find port end
    p_port_end = p_path_start;
    // find port start
-   p_port_start = strstr(p_host_start, Url::PORT_SEPARATOR.c_str());
+   p_port_start = strstr(p_domain_start, Url::PORT_SEPARATOR.c_str());
    // get port
    if (!p_port_start) {
       p_port_start = p_port_end;
@@ -508,16 +508,16 @@ parse_url(const string & url, string & proto, uint16_t & port, string & host,  s
    }
    //    debug << "port="  << port  << endl;
 
-   // find host end
-   p_host_end = p_port_start;
-   // get host
-   host_sz = p_host_end - p_host_start;
-   if (host_sz == 0) {
+   // find domain end
+   p_domain_end = p_port_start;
+   // get domain
+   domain_sz = p_domain_end - p_domain_start;
+   if (domain_sz == 0) {
       free(start);
-      throw Url::MalformedUrlException(url + ": host name not found");
+      throw Url::MalformedUrlException(url + ": domain name not found");
    }
-   host = string(p_host_start, host_sz);
-   //    debug << "host="  << host  << endl;
+   domain = string(p_domain_start, domain_sz);
+   //    debug << "domain="  << domain  << endl;
    
    free(start);
    return;
@@ -526,14 +526,14 @@ parse_url(const string & url, string & proto, uint16_t & port, string & host,  s
 void
 Url::get_ip_and_addr() const throw (Url::NameResolutionException, Url::NetworkException) {
    struct hostent * he;
-   he = gethostbyname(mHost.c_str());
+   he = gethostbyname(mDomain.c_str());
    if (!he) {
       switch (h_errno) {
-      case HOST_NOT_FOUND : throw Url::NameResolutionException(mHost + ": host not found");
-      case NO_DATA : throw Url::NameResolutionException(mHost + ": no IP for this host");
-      case NO_RECOVERY : throw Url::NameResolutionException("name server error while recovering " + mHost);
-      case TRY_AGAIN : throw Url::NameResolutionException("temporary error of name server while recovering " + mHost + ", try again later");
-      default : throw Url::NameResolutionException("unknown error with gethostbyname()");
+      case HOST_NOT_FOUND : throw Url::NameResolutionException(mDomain + ": domain not found");
+      case NO_DATA : throw Url::NameResolutionException(mDomain + ": no IP for this domain");
+      case NO_RECOVERY : throw Url::NameResolutionException("name server error while recovering " + mDomain);
+      case TRY_AGAIN : throw Url::NameResolutionException("temporary error of name server while recovering " + mDomain + ", try again later");
+      default : throw Url::NameResolutionException("unknown error with getdomainbyname()");
       }
    }
    memcpy(&mAddr, &he->h_addr, sizeof(he->h_addr));
@@ -542,7 +542,7 @@ Url::get_ip_and_addr() const throw (Url::NameResolutionException, Url::NetworkEx
    struct addrinfo * ai;
    int error;
    /* resolve the domain name into a list of addresses */
-   error = getaddrinfo(mHost.c_str(), NULL, NULL, &ai);
+   error = getaddrinfo(mDomain.c_str(), NULL, NULL, &ai);
    if (error != 0)
       throw Url::NetworkException(gai_strerror(error));
 
@@ -593,25 +593,25 @@ Url::Addr() const throw (Url::NameResolutionException, Url::NetworkException) {
 // {
 //    string proto;
 //    uint16_t port;
-//    string host;
+//    string domain;
 //    string path;
 //    string query;
 //    string anchor;
-//    parse_url(rTxt, proto, port, host, path, query, anchor);
-//    return new Url(proto, port, host, path, query, anchor);
+//    parse_url(rTxt, proto, port, domain, path, query, anchor);
+//    return new Url(proto, port, domain, path, query, anchor);
 // }
 
 void
 Url::Init(const string & rProto,
      uint16_t port,
-     const string & rHost,
+     const string & rDomain,
      const string & rPath,
      const string & rQuery,
      const string & rAnchor)
 {
    mProto = rProto;
    mPort = port;
-   mHost = rHost;
+   mDomain = rDomain;
    mPath = rPath;
    mQuery = rQuery;
    mAnchor = rAnchor;
@@ -622,7 +622,7 @@ Url::Init(const string & rProto,
    mCanonical = string();
    mCanonical.append(mProto);
    mCanonical.append(Url::DOMAIN_SEPARATOR);
-   mCanonical.append(mHost);
+   mCanonical.append(mDomain);
    mCanonical.append(Url::PORT_SEPARATOR);
    mCanonical.append(uint16_to_string(mPort));
    mCanonical.append(mPath);
@@ -640,13 +640,13 @@ Url::Init(const string & rProto,
 
 Url::Url(const std::string & rProto,
          const uint16_t      port,
-         const std::string & rHost,
+         const std::string & rDomain,
          const std::string & rPath,
          const std::string & rQuery,
          const std::string & rAnchor)
    throw (Url::MalformedUrlException, std::bad_alloc)
 {
-   Url::Init(rProto, port, rHost, rPath, rQuery, rAnchor);
+   Url::Init(rProto, port, rDomain, rPath, rQuery, rAnchor);
    debug << *this << endl ;
 }
 
@@ -655,13 +655,13 @@ Url::Url(const std::string & rTxt)
 {
    string proto;
    uint16_t port;
-   string host;
+   string domain;
    string path;
    string query;
    string anchor;
-   parse_url(rTxt, proto, port, host, path, query, anchor);
+   parse_url(rTxt, proto, port, domain, path, query, anchor);
 
-   Url::Init(proto, port, host, path, query, anchor);
+   Url::Init(proto, port, domain, path, query, anchor);
    debug << *this << endl ;
 }
 
@@ -671,10 +671,10 @@ Url::AddQuery(const Url & rUrl, const std::string & rQuery)
 {
    const string & proto = rUrl.Proto();
    uint16_t port = rUrl.Port();
-   const string & host = rUrl.Host();
+   const string & domain = rUrl.Domain();
    const string & path = rUrl.Path();
    const string & anchor = rUrl.Anchor();
-   return Url(proto, port, host, path, rQuery, anchor);   
+   return Url(proto, port, domain, path, rQuery, anchor);   
 }
 
 std::ostream &

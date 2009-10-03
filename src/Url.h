@@ -42,7 +42,7 @@ public:
    const std::string &    Proto() const { return mProto; };
    uint16_t               Port() const { return mPort; };
    uint16_t               PortNbo() const { return mPortNbo; };
-   const std::string &    Host() const { return mHost; };
+   const std::string &    Domain() const { return mDomain; };
    const struct in_addr & Addr() const throw (Url::NameResolutionException, Url::NetworkException);
    const std::string &    Ip() const throw (Url::NameResolutionException, Url::NetworkException);
    const std::string &    Path() const { return mPath; };
@@ -58,7 +58,7 @@ private:
    std::string            mProto;
    uint16_t               mPort;
    uint16_t               mPortNbo;
-   std::string            mHost;
+   std::string            mDomain;
    std::string            mPath;
    std::string            mQuery;
    std::string            mAnchor;
@@ -68,14 +68,14 @@ private:
 
    Url(const std::string & rProto,
        const uint16_t      port,
-       const std::string & rHost,
+       const std::string & rDomain,
        const std::string & rPath,
        const std::string & rQuery  = "",
        const std::string & rAnchor = "") throw (Url::MalformedUrlException, std::bad_alloc);
 
    void Init(const std::string & rProto,
        const uint16_t      port,
-       const std::string & rHost,
+       const std::string & rDomain,
        const std::string & rPath,
        const std::string & rQuery,
        const std::string & rAnchor);
