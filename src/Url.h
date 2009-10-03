@@ -7,14 +7,6 @@
 
 #include <netinet/ip.h> // HASA struct in_addr
 
-#define HTTP_PROTO "http"
-#define COLON_SLASH_SLASH "://"
-#define URL_PORT_SEPARATOR ":"
-#define URL_PATH_SEPARATOR "/"
-#define URL_QUERY_SEPARATOR "?"
-#define URL_ANCHOR_SEPARATOR "#"
-#define HTTP_DEFAULT_PORT 80
-
 class Url
 {
 public:
@@ -35,6 +27,14 @@ public:
       NetworkException() : std::runtime_error("Network error") { }
       NetworkException(std::string s) : std::runtime_error("Network error: " + s) { }
    };
+
+   static const std::string DOMAIN_SEPARATOR;
+   static const std::string PORT_SEPARATOR;
+   static const std::string PATH_SEPARATOR;
+   static const std::string QUERY_SEPARATOR;
+   static const std::string ANCHOR_SEPARATOR;
+   static const std::string PROTO_HTTP;
+   static const uint16_t    HTTP_DEFAULT_PORT;
 
    Url(const std::string & rUrl) throw (Url::MalformedUrlException, std::bad_alloc);
    static Url * CreateFromTxt(const std::string & rUrl) throw (Url::MalformedUrlException, std::bad_alloc);

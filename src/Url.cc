@@ -18,6 +18,14 @@ using std::endl;
 using std::bad_alloc;
 using std::invalid_argument;
 
+/* string */ const string Url::DOMAIN_SEPARATOR = string("://");
+/* string */ const string Url::PORT_SEPARATOR = string(":");
+/* string */ const string Url::PATH_SEPARATOR = string("/");
+/* string */ const string Url::QUERY_SEPARATOR = string("?");
+/* string */ const string Url::ANCHOR_SEPARATOR = string("#");
+/* string */ const string Url::PROTO_HTTP = string("http");
+/* string */ const uint16_t Url::HTTP_DEFAULT_PORT = 80;
+
 /* static */ void
 Url::test(void)
 {
@@ -333,16 +341,18 @@ Url::test(void)
 
 bool
 has_colon_slash_slash(const char * s) {
-   return (strstr(s, COLON_SLASH_SLASH) != NULL);
+   return (strstr(s, Url::DOMAIN_SEPARATOR.c_str()) != NULL);
 }
 
 void
 prefix_http_colon_slash_slash(char* * sp) throw (bad_alloc) {
-   char * news = (char *) calloc(sizeof(char), strlen(*sp) + strlen(HTTP_PROTO) + strlen(COLON_SLASH_SLASH) + 1);
+   char * news = (char *) calloc(sizeof(char), strlen(*sp)
+                                 + Url::PROTO_HTTP.size()
+                                 + Url::DOMAIN_SEPARATOR.size() + 1);
    if (!news)
       throw std::bad_alloc();
-   strcat(news, HTTP_PROTO);
-   strcat(news, COLON_SLASH_SLASH);
+   strcat(news, Url::PROTO_HTTP.c_str());
+   strcat(news, Url::DOMAIN_SEPARATOR.c_str());
    strcat(news, *sp);
    free(*sp);
    *sp = news;
@@ -400,7 +410,7 @@ parse_url(const string & url, string & proto, uint16_t & port, string & host,  s
    // find anchor end
    p_anchor_end = end;
    // find anchor start
-   p_anchor_start = strstr(start, URL_ANCHOR_SEPARATOR);
+   p_anchor_start = strstr(start, Url::ANCHOR_SEPARATOR.c_str());
    if (p_anchor_start == end-1) { // empty anchor or last character is '#'
       free(start);
       throw Url::MalformedUrlException(url + ": empty anchor");
@@ -422,7 +432,7 @@ parse_url(const string & url, string & proto, uint16_t & port, string & host,  s
    // find query end
    p_query_end = end;
    // find anchor start
-   p_query_start = strstr(start, URL_QUERY_SEPARATOR);
+   p_query_start = strstr(start, Url::QUERY_SEPARATOR.c_str());
    if (p_query_start == end-1) { // empty query or last character is '#', strip it
       free(start);
       throw Url::MalformedUrlException(url + ": empty query");
@@ -441,14 +451,14 @@ parse_url(const string & url, string & proto, uint16_t & port, string & host,  s
    }
 
    // find proto start
-   p_proto_start = strstr(start, HTTP_PROTO);
+   p_proto_start = strstr(start, Url::PROTO_HTTP.c_str());
    if (p_proto_start != start) {
       free(start);
       throw Url::MalformedUrlException(url + ": don't start with \"http\"");
    }
    // find proto end
-   p_proto_end = strstr(p_proto_start, COLON_SLASH_SLASH);
-   if (p_proto_end != p_proto_start + strlen(HTTP_PROTO)) {
+   p_proto_end = strstr(p_proto_start, Url::DOMAIN_SEPARATOR.c_str());
+   if (p_proto_end != p_proto_start + Url::PROTO_HTTP.size()) {
       free(start);
       throw Url::MalformedUrlException(url + ": \"://\" not found after protocol");
    }
@@ -459,14 +469,14 @@ parse_url(const string & url, string & proto, uint16_t & port, string & host,  s
 
 
    // find host start
-   p_host_start = p_proto_end + strlen(COLON_SLASH_SLASH);
+   p_host_start = p_proto_end + Url::DOMAIN_SEPARATOR.size();
 
 
 
    // find path end
    p_path_end = end;
    // find path start
-   p_path_start = strstr(p_host_start, URL_PATH_SEPARATOR);
+   p_path_start = strstr(p_host_start, Url::PATH_SEPARATOR.c_str());
    if (!p_path_start)
       p_path_start = p_path_end;
    // get path
@@ -479,11 +489,11 @@ parse_url(const string & url, string & proto, uint16_t & port, string & host,  s
    // find port end
    p_port_end = p_path_start;
    // find port start
-   p_port_start = strstr(p_host_start, URL_PORT_SEPARATOR);
+   p_port_start = strstr(p_host_start, Url::PORT_SEPARATOR.c_str());
    // get port
    if (!p_port_start) {
       p_port_start = p_port_end;
-      port = (uint16_t) HTTP_DEFAULT_PORT;
+      port = Url::HTTP_DEFAULT_PORT;
    } else {
       port_sz = p_port_end - p_port_start;
       string ports;
@@ -599,17 +609,19 @@ Url::Url(const std::string & rTxt)
    mAddr.s_addr = 0;
    mCanonical = string();
    mCanonical.append(mProto);
-   mCanonical.append(COLON_SLASH_SLASH);
+   mCanonical.append(Url::DOMAIN_SEPARATOR);
    mCanonical.append(mHost);
-   mCanonical.append(URL_PORT_SEPARATOR);
+   mCanonical.append(Url::PORT_SEPARATOR);
    mCanonical.append(uint16_to_string(mPort));
    mCanonical.append(mPath);
    if (HasQuery()) {
-      mCanonical.append(URL_QUERY_SEPARATOR);
+      if (! begins_with(mQuery, Url::QUERY_SEPARATOR))
+         mCanonical.append(Url::QUERY_SEPARATOR);
       mCanonical.append(mQuery);
    }
    if (HasAnchor()) {
-      mCanonical.append(URL_ANCHOR_SEPARATOR);
+      if (! begins_with(mAnchor, Url::ANCHOR_SEPARATOR))
+         mCanonical.append(Url::ANCHOR_SEPARATOR);
       mCanonical.append(mAnchor);
    }
    debug << *this << endl ;
@@ -642,19 +654,19 @@ Url::Url(const std::string & rProto,
    mAddr.s_addr = 0;
    mCanonical = string();
    mCanonical.append(mProto);
-   mCanonical.append(COLON_SLASH_SLASH);
+   mCanonical.append(Url::DOMAIN_SEPARATOR);
    mCanonical.append(mHost);
-   mCanonical.append(URL_PORT_SEPARATOR);
+   mCanonical.append(Url::PORT_SEPARATOR);
    mCanonical.append(uint16_to_string(mPort));
    mCanonical.append(mPath);
    if (HasQuery()) {
-      if (! begins_with(mQuery, URL_QUERY_SEPARATOR))
-         mCanonical.append(URL_QUERY_SEPARATOR);
+      if (! begins_with(mQuery, Url::QUERY_SEPARATOR))
+         mCanonical.append(Url::QUERY_SEPARATOR);
       mCanonical.append(mQuery);
    }
    if (HasAnchor()) {
-      if (! begins_with(mAnchor, URL_ANCHOR_SEPARATOR))
-         mCanonical.append(URL_ANCHOR_SEPARATOR);
+      if (! begins_with(mAnchor, Url::ANCHOR_SEPARATOR))
+         mCanonical.append(Url::ANCHOR_SEPARATOR);
       mCanonical.append(mAnchor);
    }
    debug << *this << endl ;
