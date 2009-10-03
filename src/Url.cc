@@ -57,7 +57,7 @@ Url::test(void)
       const char * url_txt = "hTTp://gwc.iblInx.coM:2108/gwc/cgi-BIn/fc";
       Url * p_url;
       try {
-         p_url = Url::CreateFromTxt(url_txt);
+         p_url = new Url(url_txt);
       } catch (Url::MalformedUrlException & mue) {
          std::cerr << mue.what() << endl;
          goto error;
@@ -74,7 +74,7 @@ Url::test(void)
       const char * url_txt = "hTTp://gwc.iblinx.net:13/fc?bla.php#foobar";
       Url * p_url;
       try {
-         p_url = Url::CreateFromTxt(url_txt);
+         p_url = new Url(url_txt);
       } catch (Url::MalformedUrlException & mue) {
          std::cerr << mue.what() << endl;
          goto error;
@@ -94,7 +94,7 @@ Url::test(void)
       const char * url_txt = "http://gwc.iblinx.com/";
       Url * p_url;
       try {
-         p_url = Url::CreateFromTxt(url_txt);
+         p_url = new Url(url_txt);
       } catch (Url::MalformedUrlException & mue) {
          std::cerr << mue.what() << endl;
          goto error;
@@ -112,7 +112,7 @@ Url::test(void)
       const char * url_txt = "hTTp://gwc.iblInx.coM:2108";
       Url * p_url;
       try {
-         p_url = Url::CreateFromTxt(url_txt);
+         p_url = new Url(url_txt);
       } catch (Url::MalformedUrlException & mue) {
          std::cerr << mue.what() << endl;
          goto error;
@@ -130,7 +130,7 @@ Url::test(void)
       const char * url_txt = "hTTp://gwc.iblInx.coM:2108#bla";
       Url * p_url;
       try {
-         p_url = Url::CreateFromTxt(url_txt);
+         p_url = new Url(url_txt);
       } catch (Url::MalformedUrlException & mue) {
          std::cerr << mue.what() << endl;
          goto error;
@@ -149,7 +149,7 @@ Url::test(void)
       const char * url_txt = "hTTp://a";
       Url * p_url;
       try {
-         p_url = Url::CreateFromTxt(url_txt);
+         p_url = new Url(url_txt);
       } catch (Url::MalformedUrlException & mue) {
          std::cerr << mue.what() << endl;
          goto error;
@@ -167,7 +167,7 @@ Url::test(void)
       const char * url_txt = "hTTp://a/bla/foo.sh";
       Url * p_url;
       try {
-         p_url = Url::CreateFromTxt(url_txt);
+         p_url = new Url(url_txt);
       } catch (Url::MalformedUrlException & mue) {
          std::cerr << mue.what() << endl;
          goto error;
@@ -185,7 +185,7 @@ Url::test(void)
       const char * url_txt = "hTTp://a:1234";
       Url * p_url;
       try {
-         p_url = Url::CreateFromTxt(url_txt);
+         p_url = new Url(url_txt);
       } catch (Url::MalformedUrlException & mue) {
          std::cerr << mue.what() << endl;
          goto error;
@@ -203,7 +203,7 @@ Url::test(void)
       const char * url_txt = "htatp://www.google.com:120/bla/foo.sh";
       Url * p_url;
       try {
-         p_url = Url::CreateFromTxt(url_txt);
+         p_url = new Url(url_txt);
       } catch (Url::MalformedUrlException & mue) {
          goto ok1;
       } catch (std::bad_alloc & ba) {
@@ -218,7 +218,7 @@ Url::test(void)
       const char * url_txt = "ahttp://www.google.com:120/bla/foo.sh";
       Url * p_url;
       try {
-         p_url = Url::CreateFromTxt(url_txt);
+         p_url = new Url(url_txt);
       } catch (Url::MalformedUrlException & mue) {
          goto ok2;
       } catch (std::bad_alloc & ba) {
@@ -233,7 +233,7 @@ Url::test(void)
       const char * url_txt = "http:/a/www.google.com:120/bla/foo.sh";
       Url * p_url;
       try {
-         p_url = Url::CreateFromTxt(url_txt);
+         p_url = new Url(url_txt);
       } catch (Url::MalformedUrlException & mue) {
          goto ok3;
       } catch (std::bad_alloc & ba) {
@@ -248,7 +248,7 @@ Url::test(void)
       const char * url_txt = "http://:120/bla/foo.sh";
       Url * p_url;
       try {
-         p_url = Url::CreateFromTxt(url_txt);
+         p_url = new Url(url_txt);
       } catch (Url::MalformedUrlException & mue) {
          goto ok4;
       } catch (std::bad_alloc & ba) {
@@ -263,7 +263,7 @@ Url::test(void)
       const char * url_txt = "http://www.google.com:12a0/bla/foo.sh";
       Url * p_url;
       try {
-         p_url = Url::CreateFromTxt(url_txt);
+         p_url = new Url(url_txt);
       } catch (Url::MalformedUrlException & mue) {
          goto ok5;
       } catch (std::bad_alloc & ba) {
@@ -277,7 +277,7 @@ Url::test(void)
          const char * url_txt = "http:///";
          Url * p_url;
          try {
-            p_url = Url::CreateFromTxt(url_txt);
+            p_url = new Url(url_txt);
          } catch (Url::MalformedUrlException & mue) {
             goto ok6;
          } catch (std::bad_alloc & ba) {
@@ -292,7 +292,7 @@ Url::test(void)
          const char * url_txt = "http://:32";
          Url * p_url;
          try {
-            p_url = Url::CreateFromTxt(url_txt);
+            p_url = new Url(url_txt);
          } catch (Url::MalformedUrlException & mue) {
             goto ok7;
          } catch (std::bad_alloc & ba) {
@@ -307,7 +307,7 @@ Url::test(void)
          const char * url_txt = "http://www.google.com:-32/bla/foo.sh";
          Url * p_url;
          try {
-            p_url = Url::CreateFromTxt(url_txt);
+            p_url = new Url(url_txt);
          } catch (Url::MalformedUrlException & mue) {
             goto ok8;
          } catch (std::bad_alloc & ba) {
@@ -322,7 +322,7 @@ Url::test(void)
          const char * url_txt = "http://www.google.com:999999/bla/foo.sh";
          Url * p_url;
          try {
-            p_url = Url::CreateFromTxt(url_txt);
+            p_url = new Url(url_txt);
          } catch (Url::MalformedUrlException & mue) {
             goto ok9;
          } catch (std::bad_alloc & ba) {
@@ -587,25 +587,37 @@ Url::Addr() const throw (Url::NameResolutionException, Url::NetworkException) {
    return mAddr;
 }
 
-/* static */ Url *
-Url::CreateFromTxt(const std::string & rTxt)
-   throw (Url::MalformedUrlException, std::bad_alloc)
-{
-   string proto;
-   uint16_t port;
-   string host;
-   string path;
-   string query;
-   string anchor;
-   parse_url(rTxt, proto, port, host, path, query, anchor);
-   return new Url(proto, port, host, path, query, anchor);
-}
+// /* static */ Url *
+// Url::CreateFromTxt(const std::string & rTxt)
+//    throw (Url::MalformedUrlException, std::bad_alloc)
+// {
+//    string proto;
+//    uint16_t port;
+//    string host;
+//    string path;
+//    string query;
+//    string anchor;
+//    parse_url(rTxt, proto, port, host, path, query, anchor);
+//    return new Url(proto, port, host, path, query, anchor);
+// }
 
-Url::Url(const std::string & rTxt)
-   throw (Url::MalformedUrlException, std::bad_alloc)
+void
+Url::Init(const string & rProto,
+     uint16_t port,
+     const string & rHost,
+     const string & rPath,
+     const string & rQuery,
+     const string & rAnchor)
 {
-   parse_url(rTxt, mProto, mPort, mHost, mPath, mQuery, mAnchor);
+   mProto = rProto;
+   mPort = port;
+   mHost = rHost;
+   mPath = rPath;
+   mQuery = rQuery;
+   mAnchor = rAnchor;
+
    mPortNbo = htons(mPort);
+   mIp = string("");
    mAddr.s_addr = 0;
    mCanonical = string();
    mCanonical.append(mProto);
@@ -624,6 +636,32 @@ Url::Url(const std::string & rTxt)
          mCanonical.append(Url::ANCHOR_SEPARATOR);
       mCanonical.append(mAnchor);
    }
+}
+
+Url::Url(const std::string & rProto,
+         const uint16_t      port,
+         const std::string & rHost,
+         const std::string & rPath,
+         const std::string & rQuery,
+         const std::string & rAnchor)
+   throw (Url::MalformedUrlException, std::bad_alloc)
+{
+   Url::Init(rProto, port, rHost, rPath, rQuery, rAnchor);
+   debug << *this << endl ;
+}
+
+Url::Url(const std::string & rTxt)
+   throw (Url::MalformedUrlException, std::bad_alloc)
+{
+   string proto;
+   uint16_t port;
+   string host;
+   string path;
+   string query;
+   string anchor;
+   parse_url(rTxt, proto, port, host, path, query, anchor);
+
+   Url::Init(proto, port, host, path, query, anchor);
    debug << *this << endl ;
 }
 
@@ -637,39 +675,6 @@ Url::AddQuery(const Url & rUrl, const std::string & rQuery)
    const string & path = rUrl.Path();
    const string & anchor = rUrl.Anchor();
    return Url(proto, port, host, path, rQuery, anchor);   
-}
-
-Url::Url(const std::string & rProto,
-         const uint16_t      port,
-         const std::string & rHost,
-         const std::string & rPath,
-         const std::string & rQuery,
-         const std::string & rAnchor)
-   throw (Url::MalformedUrlException, std::bad_alloc)
-   : mProto(rProto), mPort(port), mHost(rHost), mPath(rPath),
-     mQuery(rQuery), mAnchor(rAnchor), mIp("")
-     // mIP need to be the empty string to know it is not initialized
-{
-   mPortNbo = htons(mPort);
-   mAddr.s_addr = 0;
-   mCanonical = string();
-   mCanonical.append(mProto);
-   mCanonical.append(Url::DOMAIN_SEPARATOR);
-   mCanonical.append(mHost);
-   mCanonical.append(Url::PORT_SEPARATOR);
-   mCanonical.append(uint16_to_string(mPort));
-   mCanonical.append(mPath);
-   if (HasQuery()) {
-      if (! begins_with(mQuery, Url::QUERY_SEPARATOR))
-         mCanonical.append(Url::QUERY_SEPARATOR);
-      mCanonical.append(mQuery);
-   }
-   if (HasAnchor()) {
-      if (! begins_with(mAnchor, Url::ANCHOR_SEPARATOR))
-         mCanonical.append(Url::ANCHOR_SEPARATOR);
-      mCanonical.append(mAnchor);
-   }
-   debug << *this << endl ;
 }
 
 std::ostream &
