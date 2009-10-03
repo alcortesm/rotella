@@ -8,7 +8,7 @@
 // create the configuration variables with
 // the values stored in the configuration
 // file or defaults where available
-Conf
+/* static */ Conf
 Conf::FromFile(const std::string & path) throw (std::invalid_argument, std::bad_alloc)
 {
    UNUSED(path);

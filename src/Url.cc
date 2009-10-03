@@ -18,7 +18,7 @@ using std::endl;
 using std::bad_alloc;
 using std::invalid_argument;
 
-void
+/* static */ void
 Url::test(void)
 {
    {
@@ -577,7 +577,7 @@ Url::Addr() const throw (Url::NameResolutionException, Url::NetworkException) {
    return mAddr;
 }
 
-Url *
+/* static */ Url *
 Url::CreateFromTxt(const std::string & rTxt)
    throw (Url::MalformedUrlException, std::bad_alloc)
 {
@@ -615,7 +615,7 @@ Url::Url(const std::string & rTxt)
    debug << *this << endl ;
 }
 
-Url
+/* static */ Url
 Url::AddQuery(const Url & rUrl, const std::string & rQuery)
    throw (Url::MalformedUrlException, std::bad_alloc)
 {
