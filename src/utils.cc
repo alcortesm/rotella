@@ -1,6 +1,8 @@
 #include "utils.h"
 
 #include <sstream>
+#include <cerrno>
+#include <cstring>
 
 int
 string_to_int(std::string & s) throw (std::invalid_argument) {
@@ -36,3 +38,16 @@ to_lower(char * s) {
       *cp = tolower(*cp);
 }
 
+void
+throw_fname_errno(const char * fname)
+   throw (std::runtime_error)
+{
+   throw std::runtime_error(std::string(fname) + "(): " + strerror(errno));
+}
+
+void
+throw_fname(const char * fname, const char * reason)
+   throw (std::runtime_error)
+{
+   throw std::runtime_error(std::string(fname) + "(): " + reason);
+}

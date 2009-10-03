@@ -109,8 +109,7 @@ http_get_response(const Url & rServer, const std::string & rQuery) throw (std::r
          tcp_proto = 6;
       }
       sock = socket(PF_INET, SOCK_STREAM, tcp_proto);
-      if (sock == -1)
-         throw std::runtime_error(string("socket(): ") + strerror(errno));
+      if (sock == -1) throw_fname_errno("socket");
    }
 
    // connect to webcache
@@ -129,7 +128,7 @@ http_get_response(const Url & rServer, const std::string & rQuery) throw (std::r
       r = connect(sock, &server_sa, server_sa_len);
       if (r == -1) {
          close(sock);
-         throw std::runtime_error(string("connect(): ") + strerror(errno));
+         throw_fname_errno("connect");
       }
       debug << "Connected to " << rServer.Canonical() << std::endl;
    }
@@ -140,8 +139,8 @@ http_get_response(const Url & rServer, const std::string & rQuery) throw (std::r
       size_t msgsz = 1024;
       msg = (char *) calloc(msgsz, sizeof(char));
       if (!msg) {
-         perror("calloc");
-         exit(EXIT_FAILURE);
+         close(sock);
+         throw_fname_errno("calloc");
       }
       size_t offset = 0;
 
@@ -159,8 +158,9 @@ http_get_response(const Url & rServer, const std::string & rQuery) throw (std::r
       ssize_t ns;
       ns = send(sock, msg, offset, NO_SEND_FLAGS);
       if (-1 == ns) {
-         perror("send");
-         exit(EXIT_FAILURE);
+         close(sock);
+         free(msg);
+         throw_fname_errno("send");
       }
       debug << "Request sent" << std::endl;
       free(msg);
@@ -171,36 +171,35 @@ http_get_response(const Url & rServer, const std::string & rQuery) throw (std::r
       size_t msgsz = 2048;
       msg = (char *) calloc(msgsz, sizeof(char));
       if (!msg) {
-         perror("calloc");
-         exit(EXIT_FAILURE);
+         close(sock);
+         throw_fname_errno("calloc");
       }
 
       ssize_t nr;
       nr = recv(sock, msg, 2048, NO_RECV_FLAGS);
       if (-1 == nr) {
-         perror("recv");
-         exit(EXIT_FAILURE);
+         close(sock);
+         free(msg);
+         throw_fname_errno("recv");
       }
-      if (0 == nr) {
-         fprintf(stderr, "Conection abnormally closed before reading response\n");
-         exit(EXIT_FAILURE);
-      }
+      if (0 == nr) throw_fname("recv", "Conection abnormally closed before reading response\n");
 
       printf("Response received\n");
 
       // read 0 to detect connection closed by the server
       nr = recv(sock, msg, 2048, NO_RECV_FLAGS);
       if (-1 == nr) {
-         perror("recv");
-         exit(EXIT_FAILURE);
+         close(sock);
+         free(msg);
+         throw_fname_errno("recv");
       }
-      if (0 != nr) {
-         fprintf(stderr, "Data received instead of conection closed by server\n");
-         exit(EXIT_FAILURE);
-      }
+      if (0 != nr) throw_fname("recv", "Data received instead of conection closed by server\n");
       // nr == 0; connection closed by server
-
       debug << "Connection closed by server" << std::endl;
+   }
+
+   // close connection
+   {
       close (sock);
       debug << "Connection closed locally" << std::endl;
    }
