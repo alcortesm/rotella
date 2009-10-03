@@ -49,6 +49,8 @@ public:
    const std::string &    Query() const { return mQuery; };
    const std::string &    Anchor() const { return mAnchor; };
    const std::string &    Canonical() const { return mCanonical; };
+
+   bool                   HasPath() const { return ! mPath.empty(); };
    bool                   HasQuery() const { return ! mQuery.empty(); };
    bool                   HasAnchor() const { return ! mAnchor.empty(); };
 

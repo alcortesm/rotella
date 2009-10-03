@@ -37,7 +37,7 @@ Url::test(void)
       const char * domain = "it.uc3m.es";
       const char * ip = "163.117.139.31";
       uint16_t port = 8080;
-      const char * path = "/alcortes/index.html";
+      const char * path = "alcortes/index.html";
       const char * query = "test.php?other=yes";
       const char * anchor = "bla";
       const char * canonical = "http://it.uc3m.es:8080/alcortes/index.html?test.php?other=yes#bla";
@@ -62,6 +62,7 @@ Url::test(void)
          assert(url.Query() == query);
          assert(url.Anchor() == anchor);
          assert(url.Canonical() == canonical);
+         assert(url.HasPath() == true);
          assert(url.HasQuery() == true);
          assert(url.HasAnchor() == true);
       } catch (Url::MalformedUrlException & mue) {
@@ -75,6 +76,101 @@ Url::test(void)
          goto error;
       } catch (Url::NetworkException & ne) {
          std::cerr << ne.what() << endl;
+         goto error;
+      }
+   }
+   // more tests on the private constructor
+   // no more DNS resolutions from now on
+   // no anchor
+   {
+      const char * proto = "http";
+      const char * domain = "it.uc3m.es";
+      uint16_t port = 8080;
+      const char * path = "alcortes/index.html";
+      const char * query = "test.php?other=yes";
+      const char * anchor = "";
+      const char * canonical = "http://it.uc3m.es:8080/alcortes/index.html?test.php?other=yes";
+
+      try {
+         Url url = Url(proto, port, domain, path, query, anchor);
+         assert(url.Proto() == proto);
+         assert(url.Port() == port);
+         assert(url.PortNbo() == htons(port));
+         assert(url.Domain() == domain);
+         assert(url.Path() == path);
+         assert(url.Query() == query);
+         assert(url.Anchor() == anchor);
+         assert(url.Canonical() == canonical);
+         assert(url.HasPath() == true);
+         assert(url.HasQuery() == true);
+         assert(url.HasAnchor() == false);
+      } catch (Url::MalformedUrlException & mue) {
+         std::cerr << mue.what() << endl;
+         goto error;
+      } catch (std::bad_alloc & ba) {
+         std::cerr << ba.what() << ": out of memory" << endl;
+         goto error;
+      }
+   }
+   // no query
+   {
+      const char * proto = "http";
+      const char * domain = "it.uc3m.es";
+      uint16_t port = 8080;
+      const char * path = "alcortes/index.html";
+      const char * query = "";
+      const char * anchor = "bla";
+      const char * canonical = "http://it.uc3m.es:8080/alcortes/index.html#bla";
+
+      try {
+         Url url = Url(proto, port, domain, path, query, anchor);
+         assert(url.Proto() == proto);
+         assert(url.Port() == port);
+         assert(url.PortNbo() == htons(port));
+         assert(url.Domain() == domain);
+         assert(url.Path() == path);
+         assert(url.Query() == query);
+         assert(url.Anchor() == anchor);
+         assert(url.Canonical() == canonical);
+         assert(url.HasPath() == true);
+         assert(url.HasQuery() == false);
+         assert(url.HasAnchor() == true);
+      } catch (Url::MalformedUrlException & mue) {
+         std::cerr << mue.what() << endl;
+         goto error;
+      } catch (std::bad_alloc & ba) {
+         std::cerr << ba.what() << ": out of memory" << endl;
+         goto error;
+      }
+   }
+   // with separators
+   {
+      const char * proto = "http";
+      const char * domain = "it.uc3m.es";
+      uint16_t port = 8080;
+      const char * path = "/alcortes/index.html";
+      const char * query = "?name=yes?user=no";
+      const char * anchor = "#bla";
+      const char * canonical = "http://it.uc3m.es:8080/alcortes/index.html?name=yes?user=no#bla";
+
+      try {
+         Url url = Url(proto, port, domain, path, query, anchor);
+         assert(url.Proto() == proto);
+         assert(url.Port() == port);
+         assert(url.PortNbo() == htons(port));
+         assert(url.Domain() == domain);
+         assert(url.Path() == path);
+         assert(url.Query() == query);
+         assert(url.Anchor() == anchor);
+         assert(url.Canonical() == canonical);
+         assert(url.HasPath() == true);
+         assert(url.HasQuery() == true);
+         assert(url.HasAnchor() == true);
+      } catch (Url::MalformedUrlException & mue) {
+         std::cerr << mue.what() << endl;
+         goto error;
+      } catch (std::bad_alloc & ba) {
+         std::cerr << ba.what() << ": out of memory" << endl;
          goto error;
       }
    }
@@ -384,6 +480,7 @@ prefix_http_colon_slash_slash(char* * sp) throw (bad_alloc) {
    *sp = news;
 }
 
+// TODO: only proto & domain must be case insensitive
 void
 parse_url(const string & url, string & proto, uint16_t & port, string & domain,  string & path, string & query, string & anchor)
    throw (Url::MalformedUrlException, bad_alloc) {
@@ -651,7 +748,11 @@ Url::Init(const string & rProto,
    mCanonical.append(mDomain);
    mCanonical.append(Url::PORT_SEPARATOR);
    mCanonical.append(uint16_to_string(mPort));
-   mCanonical.append(mPath);
+   if (HasPath()) {
+      if (! begins_with(mPath, Url::PATH_SEPARATOR))
+         mCanonical.append(Url::PATH_SEPARATOR);
+      mCanonical.append(mPath);
+   }
    if (HasQuery()) {
       if (! begins_with(mQuery, Url::QUERY_SEPARATOR))
          mCanonical.append(Url::QUERY_SEPARATOR);
