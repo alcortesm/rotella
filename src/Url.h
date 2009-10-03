@@ -37,13 +37,8 @@ public:
    };
 
    Url(const std::string & rUrl) throw (Url::MalformedUrlException, std::bad_alloc);
-   static Url FromParts(const std::string & rProto,
-       const std::string & rHost,
-       const std::string & rPath,
-       const uint16_t      port = 0,
-       const std::string & rQuery  = "",
-       const std::string & rAnchor = "") throw (Url::MalformedUrlException, std::bad_alloc);
-
+   static Url * CreateFromTxt(const std::string & rUrl) throw (Url::MalformedUrlException, std::bad_alloc);
+   static Url AddQuery(const Url & rUrl, const std::string & rQuery) throw (Url::MalformedUrlException, std::bad_alloc);
    const std::string &    Proto() const { return mProto; };
    uint16_t               Port() const { return mPort; };
    uint16_t               PortNbo() const { return mPortNbo; };
@@ -60,15 +55,22 @@ public:
    static void            test(void);
 
 private:
+   Url(const std::string & rProto,
+       const uint16_t      port,
+       const std::string & rHost,
+       const std::string & rPath,
+       const std::string & rQuery  = "",
+       const std::string & rAnchor = "") throw (Url::MalformedUrlException, std::bad_alloc);
+
    std::string            mProto;
    uint16_t               mPort;
    uint16_t               mPortNbo;
    std::string            mHost;
-   mutable struct in_addr mAddr;
-   mutable std::string    mIp;
    std::string            mPath;
    std::string            mQuery;
    std::string            mAnchor;
+   mutable struct in_addr mAddr;
+   mutable std::string    mIp;
    std::string            mCanonical;
 
    void get_ip_and_addr() const throw (Url::NameResolutionException, Url::NetworkException);
