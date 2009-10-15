@@ -107,12 +107,12 @@ main(int argc, char ** argv)
 {
    digest_args(argc, argv);
 
-//    {
-//       Url::test();
-//       test_command();
-//       exit(EXIT_SUCCESS);
-//    }
-
+   // unit tests
+   {
+      Url::test();
+      //       test_command();
+      //       exit(EXIT_SUCCESS);
+   }
 
    try {
       Conf conf = Conf::FromFile();
