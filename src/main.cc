@@ -102,17 +102,21 @@ initialize(const Url & rWebCache) throw (std::runtime_error)
    return;
 }
 
+void
+tests(void)
+{
+   debug << "Running unit tests!" <<  std::endl;
+   Url::test();
+   test_command();
+   debug << "All tests passed!" <<  std::endl;
+}
+
 int
 main(int argc, char ** argv)
 {
    digest_args(argc, argv);
 
-   // unit tests
-   {
-      Url::test();
-      //       test_command();
-      //       exit(EXIT_SUCCESS);
-   }
+   tests();
 
    try {
       Conf conf = Conf::FromFile();

@@ -774,7 +774,7 @@ Url::Url(const std::string & rProto,
    throw (Url::MalformedUrlException, std::bad_alloc)
 {
    Url::Init(rProto, port, rDomain, rPath, rQuery, rAnchor);
-   debug << *this << endl ;
+   debug << "Creating " << *this << endl ;
 }
 
 Url::Url(const std::string & rTxt)
@@ -789,7 +789,7 @@ Url::Url(const std::string & rTxt)
    parse_url(rTxt, proto, port, domain, path, query, anchor);
 
    Url::Init(proto, port, domain, path, query, anchor);
-   debug << *this << endl ;
+   debug << "Creating " << *this << endl ;
 }
 
 /* static */ Url
