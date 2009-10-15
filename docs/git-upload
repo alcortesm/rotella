@@ -1,9 +1,24 @@
-#/bin/bash
+#!/bin/bash
+
+repo="rotella"
 
 cd
+
+echo "git-upload> mounting git repository at violin.it.uc3m.es"
 mount-git-repos || exit
-cd ~/mnt/git-repos/rotella || exit
+echo "git-upload> done"
+
+cd ~/mnt/git-repos/$repo || exit
+
+echo "git-upload> fetching commits from here to violin"
 git fetch non-violin || exit
+echo "git-upload> done"
+
+echo "git-upload> merging commits at violin"
 git merge non-violin/master || exit
-cd 
+echo "git-upload> done"
+
+cd
+echo "git-upload> un-mounting git repository"
 unmount-git-repos
+echo "git-upload> done"
