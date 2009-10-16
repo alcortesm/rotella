@@ -16,15 +16,19 @@ const char * COMMAND_EXIT = "exit";
 int
 line_is_too_big(const char * line)
 {
-   UNUSED(line);
-   return 0;
+   if (strlen(line) == LINESZ -1)
+      return 1;
+   else
+      return 0;
 }
 
 int
 is_not_command(const char * line)
 {
-   UNUSED(line);
-   return 0;
+   if (memcmp(line, COMMAND_EXIT, strlen(COMMAND_EXIT)+1) == 0)
+      return 0;
+   else
+      return 1;
 }
 
 bool
@@ -208,8 +212,12 @@ prompt_loop(void *)
       read_clean_line(line);
 
       if (is_not_command(line)) {
-         fprintf(stderr, "error: not a command!\n");
-         exit(EXIT_FAILURE);
+         r = fputs("unrecogniced command\n", stdout);
+         if (r == EOF) {
+            fprintf(stderr, "fputs: unknown error\n");
+            exit(EXIT_FAILURE);
+         }
+         continue;
       }
 
       if (is_command_exit(line)) {
