@@ -646,6 +646,19 @@ parse_url(const string & url, string & proto, uint16_t & port, string & domain, 
    return;
 }
 
+string
+ipv4_addr_to_string(struct in_addr * p_a)
+{
+   char ipv4_addr[INET_ADDRSTRLEN];
+   const char * p;
+   p = inet_ntop(AF_INET, (const void *) p_a, ipv4_addr, INET_ADDRSTRLEN);
+   if (p == NULL) {
+      perror("inet_ntop");
+      exit(EXIT_FAILURE);
+   }
+   return string(ipv4_addr);
+}
+
 void
 Url::get_ip_and_addr() const throw (Url::NameResolutionException, Url::NetworkException) {
    struct hostent * he;
@@ -660,7 +673,8 @@ Url::get_ip_and_addr() const throw (Url::NameResolutionException, Url::NetworkEx
       }
    }
    memcpy(&mAddr, &he->h_addr, sizeof(he->h_addr));
-   mIp = string(inet_ntoa(mAddr));
+   mIp = ipv4_addr_to_string(&mAddr);
+   
     
    struct addrinfo * ai;
    int error;
@@ -676,7 +690,7 @@ Url::get_ip_and_addr() const throw (Url::NameResolutionException, Url::NetworkEx
          sin = (struct sockaddr_in *) curr_ai->ai_addr;
          memcpy(&mAddr, &sin->sin_addr, sizeof(sin->sin_addr));
          freeaddrinfo(ai);
-         mIp = string(inet_ntoa(mAddr));
+         mIp = ipv4_addr_to_string(&mAddr);
          return;
       }
    }
