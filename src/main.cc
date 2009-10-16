@@ -109,6 +109,7 @@ tests(void)
    debug << std::endl << std::endl << "Running unit tests!" <<  std::endl;
    Url::test();
    test_command();
+   test_prompt();
    debug << "All tests passed!" <<  std::endl << std::endl << std::endl;
 }
 
@@ -127,7 +128,7 @@ main(int argc, char ** argv)
       goto error;
    }
 
-   launch_prompt();
+   launch_prompt_and_wait();
 
    exit(EXIT_SUCCESS);
  error:
