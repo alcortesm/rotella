@@ -3,6 +3,7 @@ INSTALL_DIR = ~/bin
 SRCS = \
     prompt.cc \
     http.cc \
+    Url_test.cc \
     Url.cc \
     Conf.cc \
     Command.cc \
