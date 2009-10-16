@@ -1,6 +1,7 @@
 BIN = rotella
 INSTALL_DIR = ~/bin
 SRCS = \
+    prompt.cc \
     http.cc \
     Url.cc \
     Conf.cc \
@@ -14,7 +15,7 @@ LIBS =
 
 CC = g++
 CFLAGS = -g3 -O0 -Wfatal-errors -Werror -Wall -Wextra -std=c++98 -pedantic-errors
-LFLAGS = -g3
+LFLAGS = -g3 -lpthread
 OBJS = $(SRCS:.cc=.o)
 DEPS = $(OBJS:.o=.d)
 INSTALL_BIN=$(INSTALL_DIR)/$(BIN)

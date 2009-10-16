@@ -22,6 +22,7 @@
 #include "Conf.h"
 #include "DebugStream.h"
 #include "http.h"
+#include "prompt.h"
 
 using std::string;
 using std::endl;
@@ -125,6 +126,8 @@ main(int argc, char ** argv)
       cerr << e.what() << endl;
       goto error;
    }
+
+   launch_prompt();
 
    exit(EXIT_SUCCESS);
  error:
