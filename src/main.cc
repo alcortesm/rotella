@@ -106,10 +106,10 @@ initialize(const Url & rWebCache) throw (std::runtime_error)
 void
 tests(void)
 {
-   debug << "Running unit tests!" <<  std::endl;
+   debug << std::endl << std::endl << "Running unit tests!" <<  std::endl;
    Url::test();
    test_command();
-   debug << "All tests passed!" <<  std::endl;
+   debug << "All tests passed!" <<  std::endl << std::endl << std::endl;
 }
 
 int
