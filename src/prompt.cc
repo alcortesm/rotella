@@ -5,6 +5,7 @@
 #include <string.h>
 #include <string>
 #include <cassert>
+#include <limits>
 
 #include "prompt.h"
 #include "utils.h"
@@ -70,12 +71,28 @@ there_are_more_words(const char * line)
 }
 
 bool
-is_number(const char * line)
+is_uint16(const char * pText)
 {
-   long il;
-   char * cp;
-   il = strtol(line, &cp, 10);
-   
+   if (!pText)
+      return false;
+
+   const int DECIMAL_BASE = 10;
+   long int value = 0;
+   char *p_end = NULL;
+   errno = 0;
+   value = strtol(pText, &p_end, DECIMAL_BASE);
+
+   if (errno == ERANGE) {
+      return false; /* number out of range (bigger than long) */
+   } else if (value > std::numeric_limits<uint16_t>::max()) {
+      return false; /* number too large for a 16 bits unsigned integer */
+   } else if (value < 0) {
+      return false; /* negative number */
+   } else if (p_end == pText) {
+      return false; /* invalid numeric input */
+   } else if (*p_end != '\0') {
+      return false;/* invalid numeric input, it has extra characters at the end */
+   }
    return true;
 }
 
@@ -147,7 +164,7 @@ is_command(const char * line)
       char * second;
       second = (char *) line + strlen(COMMAND_GET);
       if (is_only_one_word(second))
-         if (is_number(second))
+         if (is_uint16(second))
             return true;
    }
 
@@ -203,7 +220,7 @@ is_command(const char * line)
       char * second;
       second = (char *) line + strlen(COMMAND_STOP);
       if (is_only_one_word(second))
-         if (is_number(second))
+         if (is_uint16(second))
             return true;
    }
 
@@ -698,7 +715,7 @@ test_prompt(void)
       }
    }
 
-   // test is_not_command
+   // test is_command
    {
       // real commands
       assert(is_command("find bla"));
@@ -739,7 +756,6 @@ test_prompt(void)
 
       assert(! is_command("get"));
       assert(! is_command("getas"));
-      assert(! is_command("get 0"));
       assert(! is_command("get -145"));
       assert(! is_command("get -1"));
       assert(! is_command("get hola"));
