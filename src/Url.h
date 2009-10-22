@@ -54,7 +54,7 @@ public:
    bool                   HasQuery() const { return ! mQuery.empty(); };
    bool                   HasAnchor() const { return ! mAnchor.empty(); };
 
-   static void            test(void);
+   static void            Test();
 
 private:
    std::string            mProto;

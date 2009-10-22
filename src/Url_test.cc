@@ -11,7 +11,7 @@
 using std::endl;
 
 /* static */ void
-Url::test(void)
+Url::Test(void)
 {
    // test the private constructor
    // this test involves a DNS resolution, you'll need a working resolver
