@@ -5,6 +5,7 @@
 #include <ostream>   // USES output stream for operator<< overloading
 #include <string>    // USES & HASA-USES string interface
 #include <stdexcept> // USES invalid_argument exception
+#include <vector>    // HASA vector of strings
 
 // The Command class stores a command that has been issued to rotella.
 //
@@ -25,6 +26,8 @@
 class Command
 {
 public:
+   static void Test();
+
    Command(const std::string&) throw (std::invalid_argument);
 
    const std::string&  rVerb() const;
@@ -32,9 +35,11 @@ public:
    const std::string&  rArg(unsigned int) const throw (std::invalid_argument);
 
 private:
-    std::string  mVerb;
-    unsigned int mNumArgs;
-    std::string  mArg[3];
+    std::string              mVerb;
+    unsigned int             mNumArgs;
+    std::vector<std::string> mArg;
+
+    static std::string clean_line(const std::string & rLine);
 };
 
 std::ostream& operator<<(std::ostream& os, Command c);

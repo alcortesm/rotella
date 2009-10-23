@@ -67,12 +67,6 @@ inf_loop(void)
 }
 
 void
-test_command() {
-   Command c("hola");
-   debug << c << endl;
-}
-
-void
 initialize(const Url & rWebCache) throw (std::runtime_error)
 {
    debug << "** Initialization started" << endl;
@@ -107,9 +101,9 @@ void
 tests(void)
 {
    debug << std::endl << std::endl << "Running unit tests!" <<  std::endl;
+   Command::Test();
    Url::Test();
-   test_command();
-   test_prompt();
+   //   test_prompt();
    debug << "All tests passed!" <<  std::endl << std::endl << std::endl;
 }
 
@@ -119,7 +113,9 @@ main(int argc, char ** argv)
    digest_args(argc, argv);
 
    tests();
+   exit(EXIT_SUCCESS);
 
+   /*
    try {
       Conf conf = Conf::FromFile();
       initialize(conf.WebCache());
@@ -133,4 +129,5 @@ main(int argc, char ** argv)
    exit(EXIT_SUCCESS);
  error:
    exit(EXIT_FAILURE);
+   */
 }

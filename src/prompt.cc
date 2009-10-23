@@ -42,7 +42,7 @@ line_is_too_big(const char * line)
 }
 
 bool
-is_space(char c)
+a_is_space(char c)
 {
    if (c == ' ')
       return true;
@@ -55,7 +55,7 @@ is_space(char c)
 bool
 is_word(const char * line)
 {
-   if (is_space(line[0]))
+   if (a_is_space(line[0]))
       return false;
    if (line[0] == '\0')
       return false;
@@ -140,7 +140,7 @@ count_spaces(const char * line)
 {
    int count = 0;
    for (size_t i = 0; line[i] != '\0' ; i++) {
-      if (is_space(line[i]))
+      if (a_is_space(line[i]))
          count++;
    }
    return count;
@@ -258,7 +258,7 @@ is_command(const char * line)
 }
 
 void
-turn_tabs_into_spaces(const char * from, char * to)
+a_turn_tabs_into_spaces(const char * from, char * to)
 {
    size_t len = strlen(from);
 
@@ -272,16 +272,16 @@ turn_tabs_into_spaces(const char * from, char * to)
 }
 
 void
-drop_repeated_spaces(const char * from, char * to)
+a_drop_repeated_spaces(const char * from, char * to)
 {
    size_t len = strlen(from);
    bool prev_was_space = false;
 
    size_t j = 0;
    for (size_t i=0; i<len; i++) {
-      if (prev_was_space && is_space(from[i]))
+      if (prev_was_space && a_is_space(from[i]))
          continue;
-      if (is_space(from[i]))
+      if (a_is_space(from[i]))
          prev_was_space = true;
       else
          prev_was_space = false;
@@ -291,7 +291,7 @@ drop_repeated_spaces(const char * from, char * to)
 }
 
 void
-drop_ending_eol(const char * from, char * to)
+a_drop_ending_eol(const char * from, char * to)
 {
    size_t len = strlen(from);
 
@@ -302,9 +302,9 @@ drop_ending_eol(const char * from, char * to)
 
 
 void
-drop_space_at_start(const char * from, char * to)
+a_drop_space_at_start(const char * from, char * to)
 {
-   if (is_space(from[0]))
+   if (a_is_space(from[0]))
       strcpy(to, from+1);
    else
       strcpy(to, from);
@@ -312,7 +312,7 @@ drop_space_at_start(const char * from, char * to)
 
 
 void
-drop_space_at_end(const char * from, char * to)
+a_drop_space_at_end(const char * from, char * to)
 {
    size_t len = strlen(from);
 
@@ -337,7 +337,7 @@ clean_line(const char * line, char * clean)
    {
       char aux[LINESZ];
       memset(aux, '\0', LINESZ);
-      turn_tabs_into_spaces(tmp, aux);
+      a_turn_tabs_into_spaces(tmp, aux);
       strcpy(tmp, aux);
       //      debug << "clean_line() after turn tabs into spaces:\n\t\"" << std::string(tmp) << "\"" << std::endl;
    }
@@ -346,7 +346,7 @@ clean_line(const char * line, char * clean)
    {
       char aux[LINESZ];
       memset(aux, '\0', LINESZ);
-      drop_repeated_spaces(tmp, aux);
+      a_drop_repeated_spaces(tmp, aux);
       strcpy(tmp, aux);
       //      debug << "clean_line() after dropping repeated spaces:\n\t\"" << std::string(tmp) << "\"" << std::endl;
    }
@@ -355,7 +355,7 @@ clean_line(const char * line, char * clean)
    {
       char aux[LINESZ];
       memset(aux, '\0', LINESZ);
-      drop_ending_eol(tmp, aux);
+      a_drop_ending_eol(tmp, aux);
       strcpy(tmp, aux);
       //      debug << "clean_line() after dropping '\\n' at the end:\n\t\"" << std::string(tmp) << "\"" << std::endl;
    }
@@ -364,7 +364,7 @@ clean_line(const char * line, char * clean)
    {
       char aux[LINESZ];
       memset(aux, '\0', LINESZ);
-      drop_space_at_start(tmp, aux);
+      a_drop_space_at_start(tmp, aux);
       strcpy(tmp, aux);
       //      debug << "clean_line() after dropping space at start:\n\t\"" << std::string(tmp) << "\"" << std::endl;
    }
@@ -373,7 +373,7 @@ clean_line(const char * line, char * clean)
    {
       char aux[LINESZ];
       memset(aux, '\0', LINESZ);
-      drop_space_at_end(tmp, aux);
+      a_drop_space_at_end(tmp, aux);
       strcpy(tmp, aux);
       //      debug << "clean_line() after dropping space at end:\n\t\"" << std::string(tmp) << "\"" << std::endl;
    }
