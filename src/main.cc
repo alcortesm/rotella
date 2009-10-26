@@ -30,6 +30,37 @@ using std::cerr;
 
 DebugStream debug(std::cout, DEF_DEBUG);
 
+void usage(void);
+void digest_args(int argc, char ** argv);
+void inf_loop(void);
+void initialize(const Url & rWebCache) throw (std::runtime_error);
+void tests(void);
+
+int
+main(int argc, char ** argv)
+{
+   digest_args(argc, argv);
+
+   tests();
+   exit(EXIT_SUCCESS);
+
+   /*
+   try {
+      Conf conf = Conf::FromFile();
+      initialize(conf.WebCache());
+   } catch (std::exception & e) {
+      cerr << e.what() << endl;
+      goto error;
+   }
+
+   launch_prompt_and_wait();
+
+   exit(EXIT_SUCCESS);
+ error:
+   exit(EXIT_FAILURE);
+   */
+}
+
 void
 usage(void)
 {
@@ -105,29 +136,4 @@ tests(void)
    Url::Test();
    //   test_prompt();
    debug << "All tests passed!" <<  std::endl << std::endl << std::endl;
-}
-
-int
-main(int argc, char ** argv)
-{
-   digest_args(argc, argv);
-
-   tests();
-   exit(EXIT_SUCCESS);
-
-   /*
-   try {
-      Conf conf = Conf::FromFile();
-      initialize(conf.WebCache());
-   } catch (std::exception & e) {
-      cerr << e.what() << endl;
-      goto error;
-   }
-
-   launch_prompt_and_wait();
-
-   exit(EXIT_SUCCESS);
- error:
-   exit(EXIT_FAILURE);
-   */
 }
