@@ -134,6 +134,7 @@ tests(void)
    debug << std::endl << std::endl << "Running unit tests!" <<  std::endl;
    Command::Test();
    Url::Test();
+   http_test();
    //   test_prompt();
    debug << "All tests passed!" <<  std::endl << std::endl << std::endl;
 }

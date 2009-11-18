@@ -9,3 +9,4 @@
 // as a string.
 // If there is an error, throws an exception.
 std::string * http_get(const Url::Url & rUrl) throw (std::runtime_error);
+void http_test(void);

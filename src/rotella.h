@@ -15,10 +15,12 @@ const int MAX_TTL           = 15;   /* rotella_protocol.txt:335 */
 const int MAX_QUERY_SZ      = 256;  /* bytes, rotella_protocol.txt:344 */
 
 // constant strings for messages
-const std::string MSG_HTTP_GET("GET");
+const std::string MSG_HTTP_GET_METHOD("GET");
 const std::string MSG_HTTP_SPACE(" ");
-const std::string MSG_HTTP_VERSION("HTTP/1.0");
+const std::string MSG_HTTP_VERSION("HTTP/1.1");
 const std::string MSG_HTTP_EOL("\r\n");
+const std::string MSG_HTTP_HOST_HDR_PREFIX("Host: ");
+const std::string MSG_HTTP_CONNECTION_CLOSE_HDR("Connection: close\r\n");
 #define TCP_PROTO "tcp"
 
 // mix constants
