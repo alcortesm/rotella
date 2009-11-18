@@ -4,6 +4,8 @@
 #include <cerrno>
 #include <cstring>
 
+#include "stdlib.h"
+
 int
 string_to_int(std::string & s) throw (std::invalid_argument) {
     int i;
@@ -58,4 +60,40 @@ begins_with(std::string a, std::string b)
    if (a.compare(0, b.size(), b) == 0)
       return true;
    return false;
+}
+
+char *
+xstrdup(char const * const str)
+{
+   char * result;
+   result = strdup(str);
+   if (!result) {
+      perror("strdup");
+      exit(EXIT_FAILURE);
+   }
+   return result;
+}
+
+void *
+xmalloc(size_t size)
+{
+   void * result;
+   result = malloc(size);
+   if (!result) {
+      perror("malloc");
+      exit(EXIT_FAILURE);
+   }
+   return result;
+}
+
+void *
+xcalloc(size_t n, size_t size)
+{
+   void * result;
+   result = calloc(n, size);
+   if (!result) {
+      perror("calloc");
+      exit(EXIT_FAILURE);
+   }
+   return result;
 }
