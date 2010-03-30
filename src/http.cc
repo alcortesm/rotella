@@ -72,7 +72,10 @@ http_get(const Url & rUrl) throw (std::runtime_error)
       s.append(MSG_HTTP_GET_METHOD);
       s.append(MSG_HTTP_SPACE);
       s.append(rUrl.Path());
-      s.append(rUrl.Query());
+      if (rUrl.HasQuery()) {
+         s.append(rUrl.QUERY_SEPARATOR);
+         s.append(rUrl.Query());
+      }
       s.append(MSG_HTTP_SPACE);
       s.append(MSG_HTTP_VERSION);
       s.append(MSG_HTTP_EOL);
@@ -102,39 +105,38 @@ http_get(const Url & rUrl) throw (std::runtime_error)
 
    // try to read response
    char * buf;
-   ssize_t nr;
+   size_t nr = 0; // number of received bytes
    {
-      size_t bufsz = 2048;
+      size_t bufsz = 10*2048;
       buf = (char *) calloc(bufsz, sizeof(char));
       if (!buf) {
          close(sock);
          throw_fname_errno("calloc");
       }
 
-      nr = recv(sock, buf, bufsz, NO_RECV_FLAGS);
-      if (-1 == nr) {
-         close(sock);
-         free(buf);
-         throw_fname_errno("recv");
-      }
-      if (0 == nr) throw_fname("recv", "Conection abnormally closed before reading response\n");
+      ssize_t partial;
+      do {
+         partial = recv(sock, buf+nr, bufsz-nr, NO_RECV_FLAGS);
+         if (-1 == partial) {
+            close(sock);
+            free(buf);
+            throw_fname_errno("recv");
+         }
+         nr += partial;
+         if (nr == bufsz)
+            throw_fname("http_get", "message too long for reception buffer\n");
+      } while (partial != 0);
 
-      // read 0 to detect connection closed by the server
-      ssize_t last_nr;
-      char last_buf[1];
-      last_nr = recv(sock, last_buf, 1, NO_RECV_FLAGS);
-      if (-1 == last_nr) {
-         close(sock);
-         free(buf);
-         throw_fname_errno("recv");
-      }
-      if (0 != last_nr) throw_fname("recv", "Data received instead of conection closed by server\n");
-      // nr == 0; connection closed by server
       debug << "Connection closed by server" << std::endl;
    }
 
    // close connection
    close (sock);
+
+   // (debug) dump received data to stdout
+   std::string * p_response = new std::string(buf, 0, nr);
+   debug << "Received response:\n" << * p_response << std::endl ;
+   delete (p_response);
 
    // find the data section of the http response
    char * data;
