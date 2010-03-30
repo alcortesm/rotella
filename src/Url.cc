@@ -8,6 +8,7 @@ extern DebugStream debug;
 #include <cstring>
 #include <cstdlib>
 #include <arpa/inet.h>
+#include <cstdio>
 
 using std::string;
 using std::endl;

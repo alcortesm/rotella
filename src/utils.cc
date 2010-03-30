@@ -3,6 +3,7 @@
 #include <sstream>
 #include <cerrno>
 #include <cstring>
+#include <cstdio>
 
 #include "stdlib.h"
 

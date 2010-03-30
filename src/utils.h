@@ -4,6 +4,7 @@
 
 #include <string>
 #include <stdexcept>
+#include <stdint.h>
 
 /* prevent compiler warnings about unused variables */
 #define UNUSED(x) ((void)(x))

@@ -6,6 +6,7 @@ extern DebugStream debug;
 #include <string.h>
 #include <stdlib.h>
 #include <sstream>
+#include <cstdio>
 
 using std::string;
 using std::invalid_argument;

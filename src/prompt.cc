@@ -185,7 +185,7 @@ is_command(const char * line)
    if (memcmp(line, COMMAND_INFO_SPC, strlen(COMMAND_INFO_SPC)) == 0) {
       if (count_spaces(line) == 2) {
          char * second;
-         second = strchr(line, ' ') + 1;
+         second = strchr((char *) line, ' ') + 1;
          char * third;
          third = strchr(second, ' ') + 1;
       
@@ -200,7 +200,7 @@ is_command(const char * line)
    if (memcmp(line, COMMAND_INFO_SPC, strlen(COMMAND_INFO_SPC)) == 0) {
       if (count_spaces(line) == 3) {
          char * second;
-         second = strchr(line, ' ') + 1;
+         second = strchr((char *)line, ' ') + 1;
          char * third;
          third = strchr(second, ' ') + 1;
          char * last;
@@ -244,7 +244,7 @@ is_command(const char * line)
    // set var value
    if (count_spaces(line) == 2) {
       char * second;
-      second = strchr(line, ' ') + 1;
+      second = strchr((char *)line, ' ') + 1;
       char * third;
       third = strchr(second, ' ') + 1;
       
